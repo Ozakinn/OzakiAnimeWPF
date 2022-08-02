@@ -1,0 +1,219 @@
+﻿<ui:UiPage x:Class="OzakiAnimeWPF.Pages.Settings"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:OzakiAnimeWPF.Pages"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Background="{ui:ThemeResource ApplicationBackgroundBrush}"
+      mc:Ignorable="d"
+      Scrollable="True"
+      d:DesignHeight="800" d:DesignWidth="800"
+      Title="Settings" Loaded="UiPage_Loaded">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border
+            Background="#2E2E2E"
+            Grid.Column="0"
+            Grid.Row="0" Grid.RowSpan="3"
+            CornerRadius="8,0,0,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+
+                <!--Setting Label-->
+                <Border
+                    Margin="0,30,0,0"
+                    Grid.Row="0"
+                    Height="100"
+                    CornerRadius="8,0,0,0">
+                    <WrapPanel
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Left">
+
+                        <ui:SymbolIcon 
+                            Margin="44,0,0,0"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Left"
+                            Symbol="Settings24"
+                            FontSize="32"/>
+
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Left"
+                            Margin="5,-5,0,0"
+                            FontSize="32"
+                            FontWeight="Bold"
+                            Foreground="#FFFFFF"
+                            Text="Settings" />
+                        </WrapPanel>
+
+
+
+                </Border>
+
+                <StackPanel
+            Grid.Row="1"
+            Margin="44,0,44,0">
+                    <ui:CardExpander
+                Icon="WrenchScrewdriver24"
+                IsExpanded="False">
+                        <ui:CardExpander.Header>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                    <TextBlock
+                            FontSize="13"
+                            FontWeight="Medium"
+                            Text="Developer Settings" />
+                                    <TextBlock
+                            FontSize="12"
+                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                            Text="Any changes made internally could cause the application to crash." />
+                                </StackPanel>
+                            </Grid>
+                        </ui:CardExpander.Header>
+                        <!--  CardExpander content  -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!--API Label-->
+                            <TextBlock
+                        VerticalAlignment="Center"
+                        Margin="10,0,0,10"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        FontSize="14"
+                        Text="Application API" 
+                        FontWeight="Medium"></TextBlock>
+
+                            <!--API Link-->
+                            <StackPanel
+                        Grid.Row="1"
+                        Margin="20,0,20,10">
+                                <TextBlock 
+                           
+                            Margin="0,0,0,5"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}" 
+                            Text="API Link:"
+                            FontSize="12"
+                            FontWeight="Medium"/>
+
+                                <ui:TextBox x:Name="txtAPILink"
+                            PlaceholderText="Default"></ui:TextBox>
+                            </StackPanel>
+
+                            <!--TopAir Path/Parameter-->
+                            <StackPanel
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="20,0,20,10">
+                                <TextBlock 
+                            Margin="0,0,0,5"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}" 
+                            Text="Top Airing Path/Parameter:"
+                            FontSize="12"
+                            FontWeight="Medium"/>
+
+                                <ui:TextBox x:Name="txtTopAirPath"
+                            PlaceholderText="Default"></ui:TextBox>
+                            </StackPanel>
+
+                            <!--Recent Release Path/Parameter-->
+                            <StackPanel
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Margin="20,0,20,10">    
+                                <TextBlock 
+                            Margin="0,0,0,5"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}" 
+                            Text="Recent Release Path/Parameter:"
+                            FontSize="12"
+                            FontWeight="Medium"/>
+
+                                <ui:TextBox x:Name="txtReleasePath"
+                            PlaceholderText="Default"></ui:TextBox>
+                            </StackPanel>
+
+                            <!--Recent Release Path/Parameter-->
+                            <StackPanel
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Margin="20,0,20,10">
+                                <TextBlock 
+                            Margin="0,0,0,5"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}" 
+                            Text="Anime Info Path/Parameter:"
+                            FontSize="12"
+                            FontWeight="Medium"/>
+
+                                <ui:TextBox x:Name="txtAnimeInfoPath"
+                            PlaceholderText="Default"></ui:TextBox>
+                            </StackPanel>
+
+                            <!--Save Developer Settings-->
+                            <WrapPanel
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Grid.Row="3"
+                                Grid.Column="0" Grid.ColumnSpan="2"
+                                Margin="20,15,20,10">
+
+                                <ui:Button 
+                            
+                                    Margin="5"
+                                    x:Name="btnSave_DeveloperSettings"
+                                    Padding="30,10,30,10"
+                                    Appearance="Success"
+                                    HorizontalAlignment="Center"
+                                    FontSize="12"
+                                    Content="Save" 
+                                    Click="btnSave_DeveloperSettings_Click">
+
+                                </ui:Button>
+
+                                <ui:Button 
+                                    Margin="5"
+                                    x:Name="btnReset_DeveloperSettings"
+                                    Padding="30,10,30,10"
+                                    Appearance="Danger"
+                                    HorizontalAlignment="Center"
+                                    FontSize="12"
+                                    Content="Reset" 
+                                    Click="btnReset_DeveloperSettings_Click">
+
+                                </ui:Button>
+                            </WrapPanel>
+
+
+                        </Grid>
+
+                    </ui:CardExpander>
+                </StackPanel>
+            </Grid>
+
+        </Border>
+
+    </Grid>
+</ui:UiPage>

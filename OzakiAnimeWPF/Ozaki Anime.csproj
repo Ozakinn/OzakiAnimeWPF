@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <StartupObject>OzakiAnimeWPF.App</StartupObject>
-    <ApplicationIcon>180 px.ico</ApplicationIcon>
+    <ApplicationIcon>Images\Logo\180 px.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,7 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="180 px.ico" />
+    <Content Include="Images\Logo\180 px.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

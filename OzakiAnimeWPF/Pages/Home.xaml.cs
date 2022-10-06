@@ -31,10 +31,8 @@ namespace OzakiAnimeWPF.Pages
 
         //Settings API config
         List<string> settingsAPI = new List<string>();
-        string defaultAPILink;
-        string defaultTopAirPath;
-        string defaultReleasePath;
-        string defaultAnimeInfoPath;
+
+        SettingsJson jsonSetting;
 
         //Top Airing Anime
         List<string> topair_id = new List<string>();
@@ -87,8 +85,11 @@ namespace OzakiAnimeWPF.Pages
             mainForm = main;
             InitializeComponent();
 
-            settingsAPI = SettingsFile.SettingRead();
-            Settings_API();
+            jsonSetting = new SettingsJson();
+            jsonSetting = SettingsFile.SettingRead();
+
+            //DEBUG PURPOSES ONLY
+            //System.Windows.MessageBox.Show(jsonSetting.defaultAPILink);
 
         }
 
@@ -99,19 +100,7 @@ namespace OzakiAnimeWPF.Pages
             RecentStack.Visibility = Visibility.Hidden;
             HomeLoader.Visibility = Visibility.Visible;
 
-            try
-            {
                 await Home_Load();
-            }
-            catch (Exception ex)
-            {
-                mainForm.RootDialog.Title = "Error: Loading Home";
-                mainForm.RootDialog.Content = ex.Message;
-                mainForm.RootDialog.Show();
-                TopAirStack.Visibility = Visibility.Hidden;
-                RecentStack.Visibility = Visibility.Hidden;
-                HomeLoader.Visibility = Visibility.Visible;
-            }
 
             TopAirStack.Visibility = Visibility.Visible;
             RecentStack.Visibility = Visibility.Visible;
@@ -150,11 +139,9 @@ namespace OzakiAnimeWPF.Pages
             ServicePointManager.Expect100Continue = true;
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
             var client = new HttpClient();
-            var animeinfo = await client.GetStringAsync(defaultAnimeInfoPath + animeid);
+            var animeinfo = await client.GetStringAsync(jsonSetting.defaultAPILink + jsonSetting.defaultAnimeInfoPath + animeid);
 
             animeInfo info = System.Text.Json.JsonSerializer.Deserialize<animeInfo>(animeinfo);
-
-
 
             rd.Add(info.releaseDate.ToString());
             sd.Add(info.subOrDub.ToString());
@@ -163,14 +150,16 @@ namespace OzakiAnimeWPF.Pages
 
         public async Task fetchTopAir()
         {
-            checkUrl = await UrlIsValid(defaultAPILink);
+
+
+            checkUrl = await UrlIsValid(jsonSetting.defaultAPILink);
             if (checkUrl == true)
             {
 
                 ServicePointManager.Expect100Continue = true;
                 ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
                 var client = new HttpClient();
-                var topair_anime = await client.GetStringAsync(defaultTopAirPath);
+                var topair_anime = await client.GetStringAsync(jsonSetting.defaultAPILink + jsonSetting.defaultTopAirPath);
 
 
                 var topair_anime_jsonLinq = JObject.Parse(topair_anime);
@@ -251,14 +240,14 @@ namespace OzakiAnimeWPF.Pages
 
         public async Task fetchRecent()
         {
-            checkUrl = await UrlIsValid(defaultAPILink);
+            checkUrl = await UrlIsValid(jsonSetting.defaultAPILink);
             if (checkUrl == true)
             {
                 ServicePointManager.Expect100Continue = true;
                 ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
 
                 var client = new HttpClient();
-                var recent_anime = await client.GetStringAsync(defaultReleasePath);
+                var recent_anime = await client.GetStringAsync(jsonSetting.defaultAPILink + jsonSetting.defaultReleasePath);
                 var recent_anime_jsonLinq = JObject.Parse(recent_anime);
                 // Find the first array using Linq
                 //fetch Top air Anime
@@ -729,16 +718,6 @@ namespace OzakiAnimeWPF.Pages
 
                 return false;
             }
-        }
-
-        //API settings
-        public void Settings_API()
-        {
-            string[] data = settingsAPI.ToArray();
-            defaultAPILink = data[0];
-            defaultTopAirPath = data[0] + data[1];
-            defaultReleasePath = data[0] + data[2];
-            defaultAnimeInfoPath = data[0] + data[3];
         }
 
         //Working for V1 API

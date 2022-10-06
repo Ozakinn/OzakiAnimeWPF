@@ -32,10 +32,8 @@ namespace OzakiAnimeWPF.Pages
 
         //Settings API config
         List<string> settingsAPI = new List<string>();
-        string defaultAPILink;
-        string defaultTopAirPath;
-        string defaultReleasePath;
-        string defaultAnimeInfoPath;
+
+        SettingsJson jsonSetting;
 
         //URL checker
         bool checkUrl;
@@ -51,8 +49,8 @@ namespace OzakiAnimeWPF.Pages
             topair_id = topairid;
             topair_Img = topair_img;
 
-            settingsAPI = SettingsFile.SettingRead();
-            Settings_API();
+            jsonSetting = new SettingsJson();
+            jsonSetting = SettingsFile.SettingRead();
 
             InitializeComponent();
         }
@@ -78,14 +76,14 @@ namespace OzakiAnimeWPF.Pages
 
         public async Task fetch_SelectedAnime()
         {
-            checkUrl = await UrlIsValid(defaultAPILink);
+            checkUrl = await UrlIsValid(jsonSetting.defaultAPILink);
             if (checkUrl == true)
             {
 
                 ServicePointManager.Expect100Continue = true;
                 ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
                 var client = new HttpClient();
-                var selected_anime = await client.GetStreamAsync(defaultAnimeInfoPath+"/"+ topair_id);
+                var selected_anime = await client.GetStreamAsync(jsonSetting.defaultAPILink + jsonSetting.defaultAnimeInfoPath + "/"+ topair_id);
                 selectedanime = System.Text.Json.JsonSerializer.Deserialize<animeInfo>(selected_anime);
 
 
@@ -208,16 +206,6 @@ namespace OzakiAnimeWPF.Pages
             //SolidColorBrush nt = new SolidColorBrush(newColor);
 
             //CoverPhotoColor.Color = newColor;
-        }
-
-        //API settings
-        public void Settings_API()
-        {
-            string[] data = settingsAPI.ToArray();
-            defaultAPILink = data[0];
-            defaultTopAirPath = data[0] + data[1];
-            defaultReleasePath = data[0] + data[2];
-            defaultAnimeInfoPath = data[0] + data[3];
         }
 
         //URL Checker if API is active or down

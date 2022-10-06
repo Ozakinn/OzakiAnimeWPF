@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 namespace OzakiAnimeWPF.Data
 {
 
+
     public class animeInfo
     {
         public string id { get; set; }
@@ -32,8 +33,16 @@ namespace OzakiAnimeWPF.Data
     public class Episode
     {
         public string id { get; set; }
-        public int number { get; set; }
+        public double number { get; set; }
         public string url { get; set; }
+    }
+
+    public class SettingsJson
+    {
+        public string defaultAPILink { get; set; }
+        public string defaultTopAirPath { get; set; }
+        public string defaultReleasePath { get; set; }
+        public string defaultAnimeInfoPath { get; set; }
     }
 
     public static class PictureAnalysis

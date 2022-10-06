@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using OzakiAnimeWPF.Data;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,7 +12,7 @@ namespace OzakiAnimeWPF
 {
     public class SettingsFile
     {
-
+        SettingsJson settignsjson;
         public static void DefaultDevSettingSave(bool forceReset)
         {
             // Version 2 API
@@ -19,76 +21,64 @@ namespace OzakiAnimeWPF
             //Version 1 API
             //https://ozakianime.herokuapp.com
 
-            string defaultAPILink = "http://152.70.87.238:7777";
+            string defaultAPILink = "http://168.138.43.201:7777";
             string defaultTopAirPath = "/anime/gogoanime/top-airing";
             string defaultReleasePath = "/anime/gogoanime/recent-episodes";
             string defaultAnimeInfoPath = "/anime/gogoanime/info";
+            string filename = "OzakiAnimeConfig.json";
 
             var TempPath = Path.GetTempPath();
 
-            if (!File.Exists(TempPath + "OzakiAnimeConfig.txt") || forceReset == true)
+
+            string savepath = TempPath + filename;
+
+            SettingsJson setjson = new SettingsJson();
+
+            setjson.defaultAPILink = defaultAPILink;
+            setjson.defaultTopAirPath = defaultTopAirPath;
+            setjson.defaultReleasePath = defaultReleasePath;
+            setjson.defaultAnimeInfoPath = defaultAnimeInfoPath;
+
+            string jsonSettingsString = JsonConvert.SerializeObject(setjson);
+
+            if (!File.Exists(TempPath + filename) || forceReset == true)
             {
 
-                string[] SettingsContent = new string[]
-                {
-                defaultAPILink,         //0
-                defaultTopAirPath,      //1
-                defaultReleasePath,     //2
-                defaultAnimeInfoPath,   //3
-                };
-
-                using (StreamWriter sw = new StreamWriter(TempPath + "OzakiAnimeConfig.txt"))
-                {
-
-                    foreach (string s in SettingsContent)
-                    {
-                        sw.WriteLine(s);
-                    }
-                }
+                File.WriteAllText(savepath, jsonSettingsString);
             }
         }
 
-        public static List<string> SettingRead()
+        public static SettingsJson SettingRead()
         {
             var TempPath = Path.GetTempPath();
-            List<string> data = new List<string>();
+            string filename = "OzakiAnimeConfig.json";
+            string filepath = TempPath + filename;
 
-            string line;
-            using (StreamReader sr = new StreamReader(TempPath + "OzakiAnimeConfig.txt"))
-            {
-                while ((line = sr.ReadLine()) != null)
-                {
-                    data.Add(line);
-                }
-            }
+            DefaultDevSettingSave(false);
 
-            return data;
-            //MessageBox.Show(String.Join("\n", data));
+            var jsonString = File.ReadAllText(filepath);
+            SettingsJson settignsjson = System.Text.Json.JsonSerializer.Deserialize<SettingsJson>(jsonString);
+
+            return settignsjson;
         }
 
 
         public void SaveCustomDevSetting(string customApi, string customtopairPath, string customreleasePath, string customanimeinfoPath)
         {
             var TempPath = Path.GetTempPath();
+            string filename = "OzakiAnimeConfig.json";
+            string savepath = TempPath + filename;
+            SettingsJson setjson = new SettingsJson();
 
+            setjson.defaultAPILink = customApi;
+            setjson.defaultTopAirPath = customtopairPath;
+            setjson.defaultReleasePath = customreleasePath;
+            setjson.defaultAnimeInfoPath = customanimeinfoPath;
 
-            string[] SettingsContent = new string[]
-            {
-            customApi,              //0
-            customtopairPath,       //1
-            customreleasePath,      //2
-            customanimeinfoPath     //3
-            };
+            string jsonSettingsString = JsonConvert.SerializeObject(setjson);
 
-            using (StreamWriter sw = new StreamWriter(TempPath + "OzakiAnimeConfig.txt"))
-            {
+            File.WriteAllText(savepath, jsonSettingsString);
 
-                foreach (string s in SettingsContent)
-                {
-                    sw.WriteLine(s);
-                }
-            }
-            
         }
 
     }

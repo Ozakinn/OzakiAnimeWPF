@@ -49,7 +49,7 @@ namespace OzakiAnimeWPF
             resetNavSelection();
             navHome.IsActive = true;
 
-            await Task.Delay(7000);
+            await Task.Delay(2000);
             SplashUI.Visibility = Visibility.Hidden;
             MainGrid.Visibility = Visibility.Visible;
         }

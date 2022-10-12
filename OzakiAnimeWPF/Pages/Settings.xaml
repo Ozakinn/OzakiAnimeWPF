@@ -110,8 +110,10 @@
 
                             <!--API Link-->
                             <StackPanel
-                        Grid.Row="1"
-                        Margin="20,0,20,10">
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                Margin="20,0,20,10">
                                 <TextBlock 
                            
                             Margin="0,0,0,5"
@@ -124,53 +126,7 @@
                             PlaceholderText="Default"></ui:TextBox>
                             </StackPanel>
 
-                            <!--TopAir Path/Parameter-->
-                            <StackPanel
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Margin="20,0,20,10">
-                                <TextBlock 
-                            Margin="0,0,0,5"
-                            Foreground="{DynamicResource TextFillColorSecondaryBrush}" 
-                            Text="Top Airing Path/Parameter:"
-                            FontSize="12"
-                            FontWeight="Medium"/>
-
-                                <ui:TextBox x:Name="txtTopAirPath"
-                            PlaceholderText="Default"></ui:TextBox>
-                            </StackPanel>
-
-                            <!--Recent Release Path/Parameter-->
-                            <StackPanel
-                            Grid.Row="2"
-                            Grid.Column="0"
-                            Margin="20,0,20,10">    
-                                <TextBlock 
-                            Margin="0,0,0,5"
-                            Foreground="{DynamicResource TextFillColorSecondaryBrush}" 
-                            Text="Recent Release Path/Parameter:"
-                            FontSize="12"
-                            FontWeight="Medium"/>
-
-                                <ui:TextBox x:Name="txtReleasePath"
-                            PlaceholderText="Default"></ui:TextBox>
-                            </StackPanel>
-
-                            <!--Recent Release Path/Parameter-->
-                            <StackPanel
-                            Grid.Row="2"
-                            Grid.Column="1"
-                            Margin="20,0,20,10">
-                                <TextBlock 
-                            Margin="0,0,0,5"
-                            Foreground="{DynamicResource TextFillColorSecondaryBrush}" 
-                            Text="Anime Info Path/Parameter:"
-                            FontSize="12"
-                            FontWeight="Medium"/>
-
-                                <ui:TextBox x:Name="txtAnimeInfoPath"
-                            PlaceholderText="Default"></ui:TextBox>
-                            </StackPanel>
+                            
 
                             <!--Save Developer Settings-->
                             <WrapPanel

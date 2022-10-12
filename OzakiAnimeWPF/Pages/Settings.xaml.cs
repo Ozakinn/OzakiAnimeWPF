@@ -34,9 +34,9 @@ namespace OzakiAnimeWPF.Pages
 
         private void btnSave_DeveloperSettings_Click(object sender, RoutedEventArgs e)
         {
-            if (txtAPILink.Text.Length != 0 || txtTopAirPath.Text.Length != 0 || txtReleasePath.Text.Length != 0)
+            if (txtAPILink.Text.Length != 0)
             {
-                settingconfig.SaveCustomDevSetting(txtAPILink.Text, txtTopAirPath.Text, txtReleasePath.Text, txtAnimeInfoPath.Text);
+                settingconfig.SaveCustomSetting(txtAPILink.Text);
                 Snackbar("Developer Settings", "Save Successfully!", SymbolRegular.CheckmarkCircle48);
 
             }

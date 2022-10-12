@@ -1,0 +1,257 @@
+﻿<ui:UiPage xmlns:Wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"  x:Class="Ozaki_Anime.Pages.SelectedAnime.PlayEpisode"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:Ozaki_Anime.Pages.SelectedAnime"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        mc:Ignorable="d" 
+        d:DesignHeight="1000" d:DesignWidth="800"
+        Background="Black"
+        Scrollable="True"
+        Title="PlayEpisode" Loaded="UiPage_Loaded" Unloaded="UiPage_Unloaded">
+
+    <Grid
+        Background="#101010">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Border
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Height="auto"
+            CornerRadius="8"
+            Margin="10,45,10,10"
+            Background="#191919">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <!--TITLE PANEL-->
+                <StackPanel
+                x:Name="TitlePanel"
+                Grid.Row="0">
+                    <Label 
+                        Width="auto"
+                        Margin="20,10,20,0">
+                        <TextBlock
+                            x:Name="AnimeTitle"
+                            FontSize="28"
+                            FontWeight="Bold"
+                            Foreground="White"
+                            HorizontalAlignment="Left"
+                            TextWrapping="WrapWithOverflow" Text="Title">
+                        </TextBlock>
+                    </Label>
+                    <Label 
+                        x:Name="AnimeAltTitlePanel"
+                        Width="auto"
+                        Margin="20,0,20,0">
+                        <TextBlock
+                        x:Name="AnimeEpisodeTitle"
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="#BBBBBB"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Episode #: Episode Title">
+                        </TextBlock>
+                    </Label>
+                </StackPanel>
+
+                <!--VIDEO PANEL-->
+                <wpf:WebView2 
+                    Grid.Row="1"
+                    Margin="20,5,20,10"
+                    x:Name="webviewBrowser" 
+                    MinHeight="700" MinWidth="700" 
+                    MaxHeight="700" Panel.ZIndex="1" >
+                </wpf:WebView2>
+
+                <!--QUALITY AND CONTROL PANEL-->
+                <Grid
+                    Grid.Row="2"
+                    Margin="20,0,20,5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!--ROW 0 COL 0-->
+                    <WrapPanel
+                        Grid.Row="0"
+                        Grid.Column="0">
+                        <ui:SymbolIcon Symbol="Video32"></ui:SymbolIcon>
+
+                        <Label 
+                        Width="auto"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Margin="5,0,0,0">
+
+                            <TextBlock
+                            FontSize="15"
+                            FontWeight="Medium"
+                            Foreground="White"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            TextWrapping="WrapWithOverflow" 
+                            Text="Quality">
+                            </TextBlock>
+
+                        </Label>
+                    </WrapPanel>
+
+                    <!--ROW 1 COL 0-->
+                    <!--QUALITY BUTTON PANEL-->
+                    <WrapPanel
+                    Grid.Row="1"
+                        Grid.Column="0"
+                    x:Name="QualitySelect"
+                    Width="auto" Height="auto"
+                    Margin="0,0,0,5">
+                    </WrapPanel>
+
+                    <!--ROW 0 COL 2-->
+                    <WrapPanel
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        HorizontalAlignment="Right">
+                        <ui:SymbolIcon Symbol="SlideSettings24"></ui:SymbolIcon>
+
+                        <Label 
+                        Width="auto"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Margin="5,0,0,0">
+
+                            <TextBlock
+                            FontSize="15"
+                            FontWeight="Medium"
+                            Foreground="White"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            TextWrapping="WrapWithOverflow" 
+                            Text="Controls">
+                            </TextBlock>
+
+                        </Label>
+                    </WrapPanel>
+
+                    <!--ROW 1 COL 0-->
+                    <!--CONTROLS BUTTON PANEL-->
+                    <WrapPanel
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        x:Name="ControlsSelect"
+                        Width="auto" Height="auto"
+                        Margin="0,0,0,5"
+                        HorizontalAlignment="Right">
+                        <ui:Button
+                            x:Name="btnPreviousEP"
+                                Margin="5,0,0,0" Click="btnPreviousEP_Click">
+                            <ui:SymbolIcon Symbol="ChevronLeft16"></ui:SymbolIcon>
+                        </ui:Button>
+                        <ui:Button
+                            x:Name="btnFullscreen"
+                                Margin="5,0,0,0"
+                            ToolTip="Fullscreen" Click="btnFullscreen_Click">
+                            <ui:SymbolIcon Symbol="FullScreenMaximize16"></ui:SymbolIcon>
+                        </ui:Button>
+                        <ui:Button
+                            x:Name="btnNextEP"
+                                Margin="5,0,0,0" Click="btnNextEP_Click">
+                            <ui:SymbolIcon Symbol="ChevronRight16"></ui:SymbolIcon>
+                        </ui:Button>
+                    </WrapPanel>
+
+                </Grid>
+                
+
+                
+
+                <!--DESCRIPTION TITLE PANEL-->
+                <WrapPanel
+                    Grid.Row="4"
+                        Margin="20,0,20,0">
+                    <ui:SymbolIcon Symbol="TextDescription24"></ui:SymbolIcon>
+
+                    <Label 
+                        Width="auto"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Margin="5,0,0,0">
+
+                        <TextBlock
+                            FontSize="15"
+                            FontWeight="Medium"
+                            Foreground="White"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            TextWrapping="WrapWithOverflow" 
+                            Text="Description">
+                        </TextBlock>
+
+                    </Label>
+                </WrapPanel>
+
+                <!--DESCRIPTION PANEL-->
+                <Label 
+                    Grid.Row="5"
+                        x:Name="EpisodeDescriptionPanel"
+                        Width="auto"
+                        Margin="20,0,20,5">
+                    <TextBlock
+                        x:Name="EpisodeDescription"
+                        FontSize="14"
+                        FontWeight="Medium"
+                        Foreground="#C6C6C6"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Episode Description">
+                    </TextBlock>
+                </Label>
+
+            </Grid>
+            
+        </Border>
+        
+        
+        
+        <!--PAGE LAOD-->
+        <Border
+            x:Name="PageLoad"
+            Grid.Row="0"
+            Grid.RowSpan="3" 
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Background="{ui:ThemeResource ApplicationBackgroundBrush}"
+            Visibility="Hidden">
+            <StackPanel 
+                Margin="0,200,0,0"
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Top">
+                <ui:ProgressRing Margin="20" Progress="0" IsIndeterminate="True"></ui:ProgressRing>
+                <TextBlock 
+                    HorizontalAlignment="Center"
+                    Text="Loading..." 
+                    FontSize="24" 
+                    Foreground="White" 
+                    FontWeight="Bold"></TextBlock>
+            </StackPanel>
+        </Border>
+
+    </Grid>
+</ui:UiPage>

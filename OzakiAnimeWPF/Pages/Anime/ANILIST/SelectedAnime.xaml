@@ -1,0 +1,686 @@
+﻿<ui:UiPage x:Class="OzakiAnimeWPF.Pages.SelectedAnime"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:OzakiAnimeWPF.Pages"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Background="Black"
+      mc:Ignorable="d"
+      Scrollable="True"
+      d:DesignHeight="1000" d:DesignWidth="800"
+      Title="SelectedAnime" Loaded="UiPage_Loaded">
+    <Grid
+        Background="#101010">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="240"></ColumnDefinition>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        
+        <!--ANIME DETAILS-->
+        <Border
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Grid.Column="0"
+            Height="auto"
+            CornerRadius="8"
+            Margin="10,45,5,10"
+            Background="#191919">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                
+                <!--ANIME IMAGE-->
+                <Border
+                    Grid.Row="0"
+                    CornerRadius="3"
+                    Height="250"
+                    Width="175"
+                    Margin="25,25,25,10">
+                    <Border.Background>
+                        <ImageBrush 
+                            x:Name="animeImg"
+                            ImageSource="/Images/Background/grey.png" Stretch="UniformToFill"></ImageBrush>
+                    </Border.Background>
+
+
+                </Border>
+
+                <!--ANIME AIRING-->
+                <StackPanel
+                    x:Name="AiringPanel"
+                    Grid.Row="1"
+                    Margin="20,5,10,5"
+                    HorizontalAlignment="Left">
+                    
+                    <TextBlock
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="#FFFFFF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Airing">
+                    </TextBlock>
+
+                    <TextBlock
+                        x:Name="AiringTimer"
+                        FontSize="14"
+                        FontWeight="Medium"
+                        Foreground="#DFDFDF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Ep 2: 4d 7h 36m">
+                    </TextBlock>
+                </StackPanel>
+
+                <!--ANIME FORMAT-->
+                <StackPanel
+                    x:Name="FormatPanel"
+                    Grid.Row="2"
+                    Margin="20,5,10,5"
+                    HorizontalAlignment="Left">
+
+                    <TextBlock
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="#FFFFFF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Format">
+                    </TextBlock>
+
+                    <TextBlock
+                        x:Name="FormatControl"
+                        FontSize="14"
+                        FontWeight="Medium"
+                        Foreground="#DFDFDF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="TV">
+                    </TextBlock>
+                </StackPanel>
+
+                <!--ANIME EPISODES-->
+                <StackPanel
+                    x:Name="EpisodesPanel"
+                    Grid.Row="3"
+                    Margin="20,5,10,5"
+                    HorizontalAlignment="Left">
+
+                    <TextBlock
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="#FFFFFF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Episodes">
+                    </TextBlock>
+
+                    <TextBlock
+                        x:Name="EpisodesControl"
+                        FontSize="14"
+                        FontWeight="Medium"
+                        Foreground="#DFDFDF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="1036">
+                    </TextBlock>
+                </StackPanel>
+
+                <!--ANIME EPISODE DURATION-->
+                <StackPanel
+                    x:Name="EpisodeDurationPanel"
+                    Grid.Row="4"
+                    Margin="20,5,10,5"
+                    HorizontalAlignment="Left">
+
+                    <TextBlock
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="#FFFFFF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Episode Duration">
+                    </TextBlock>
+
+                    <TextBlock
+                        x:Name="EpisodeDurationControl"
+                        FontSize="14"
+                        FontWeight="Medium"
+                        Foreground="#DFDFDF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="24 mins">
+                    </TextBlock>
+                </StackPanel>
+
+                <!--ANIME STATUS-->
+                <StackPanel
+                    x:Name="StatusPanel"
+                    Grid.Row="5"
+                    Margin="20,5,10,5"
+                    HorizontalAlignment="Left">
+
+                    <TextBlock
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="#FFFFFF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Status">
+                    </TextBlock>
+
+                    <TextBlock
+                        x:Name="StatusControl"
+                        FontSize="14"
+                        FontWeight="Medium"
+                        Foreground="#DFDFDF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Releasing">
+                    </TextBlock>
+                </StackPanel>
+
+                <!--ANIME RELEASE DATE-->
+                <StackPanel
+                    x:Name="ReleaseDatePanel"
+                    Grid.Row="6"
+                    Margin="20,5,10,5"
+                    HorizontalAlignment="Left">
+
+                    <TextBlock
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="#FFFFFF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Release Date">
+                    </TextBlock>
+
+                    <TextBlock
+                        x:Name="ReleaseDateControl"
+                        FontSize="14"
+                        FontWeight="Medium"
+                        Foreground="#DFDFDF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Oct. 20, 1999">
+                    </TextBlock>
+                </StackPanel>
+
+                <!--ANIME END DATE-->
+                <StackPanel
+                    x:Name="EndDatePanel"
+                    Grid.Row="7"
+                    Margin="20,5,10,5"
+                    HorizontalAlignment="Left">
+
+                    <TextBlock
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="#FFFFFF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="End Date">
+                    </TextBlock>
+
+                    <TextBlock
+                        x:Name="EndDateControl"
+                        FontSize="14"
+                        FontWeight="Medium"
+                        Foreground="#DFDFDF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Oct. 10, 2022">
+                    </TextBlock>
+                </StackPanel>
+
+                <!--ANIME SEASON-->
+                <StackPanel
+                    x:Name="SeasonPanel"
+                    Grid.Row="8"
+                    Margin="20,5,10,5"
+                    HorizontalAlignment="Left">
+
+                    <TextBlock
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="#FFFFFF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Season">
+                    </TextBlock>
+
+                    <TextBlock
+                        x:Name="SeasonControl"
+                        FontSize="14"
+                        FontWeight="Medium"
+                        Foreground="#DFDFDF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Summer 1999">
+                    </TextBlock>
+                </StackPanel>
+
+                <!--ANIME AVERAGE SCORE-->
+                <StackPanel
+                    x:Name="AvgScorePanel"
+                    Grid.Row="9"
+                    Margin="20,5,10,5"
+                    HorizontalAlignment="Left">
+
+                    <TextBlock
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="#FFFFFF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Average Score">
+                    </TextBlock>
+
+                    <TextBlock
+                        x:Name="AvgScoreControl"
+                        FontSize="14"
+                        FontWeight="Medium"
+                        Foreground="#DFDFDF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="99%">
+                    </TextBlock>
+                </StackPanel>
+
+                <!--ANIME POPULARITY-->
+                <StackPanel
+                    x:Name="PopularityPanel"
+                    Grid.Row="10"
+                    Margin="20,5,10,5"
+                    HorizontalAlignment="Left">
+
+                    <TextBlock
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="#FFFFFF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Popularity">
+                    </TextBlock>
+
+                    <TextBlock
+                        x:Name="PopularityControl"
+                        FontSize="14"
+                        FontWeight="Medium"
+                        Foreground="#DFDFDF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="231894">
+                    </TextBlock>
+                </StackPanel>
+
+                <!--ANIME STUDIOS-->
+                <StackPanel
+                    x:Name="StudiosPanel"
+                    Grid.Row="11"
+                    Margin="20,5,10,5"
+                    HorizontalAlignment="Left">
+
+                    <TextBlock
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="#FFFFFF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Studios">
+                    </TextBlock>
+
+                    <TextBlock
+                        x:Name="StudiosControl"
+                        FontSize="14"
+                        FontWeight="Medium"
+                        Foreground="#DFDFDF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Toe Animation">
+                    </TextBlock>
+                </StackPanel>
+
+                <!--ANIME GENRES-->
+                <StackPanel
+                    x:Name="GenresPanel"
+                    Grid.Row="12"
+                    Margin="20,5,10,5"
+                    HorizontalAlignment="Left">
+
+                    <TextBlock
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="#FFFFFF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Genres">
+                    </TextBlock>
+
+                    <TextBlock
+                        x:Name="GenresControl"
+                        FontSize="14"
+                        FontWeight="Medium"
+                        Foreground="#DFDFDF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Action">
+                    </TextBlock>
+                </StackPanel>
+                
+                <!--SPACER-->
+                <StackPanel
+                    Grid.Row="13"
+                    Margin="0,10,0,0">
+                </StackPanel>
+
+
+
+            </Grid>
+            
+        </Border>
+
+        <!--ANIME CONTROLS-->
+        <Border
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Height="auto"
+            CornerRadius="8"
+            Margin="0,45,15,10"
+            Background="#191919">
+
+            <Grid>
+                <!--GRID INSIDE ANIME CONTROLS-->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <!--GRID ROW 0-->
+                <Border
+                    Grid.Row="0"
+                    Height="auto"
+                    MinHeight="300"
+                    CornerRadius="8">
+                    <Border.OpacityMask>
+                        <LinearGradientBrush
+                    StartPoint="0,1"
+                    EndPoint="0,0">
+                            <GradientStop Offset="3" Color="Red"></GradientStop>
+                            <GradientStop Offset="0.1" Color="Transparent"></GradientStop>
+
+                        </LinearGradientBrush>
+                    </Border.OpacityMask>
+                    <Border.Background>
+                        <ImageBrush
+                            x:Name="AnimeCover"
+                            ImageSource="/Images/Background/grey.png"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Stretch="UniformToFill" />
+                    </Border.Background>
+
+                </Border>
+                <!--GRID ROW 0-->
+                <StackPanel
+                    Grid.Row="0">
+                    
+                    <Label 
+                    Width="auto"
+                    Margin="20,20,20,0">
+                        <TextBlock
+                        x:Name="AnimeTitle"
+                        FontSize="28"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Title">
+                        </TextBlock>
+                    </Label>
+
+                    <Label 
+                        x:Name="AnimeAltTitlePanel"
+                        Width="auto"
+                        Margin="20,0,20,0">
+                        <TextBlock
+                        x:Name="AnimeAltTitle"
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="#BBBBBB"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Alternative Name">
+                        </TextBlock>
+                    </Label>
+
+
+                    <Label 
+                        x:Name="AnimeDescriptionPanel"
+                        Width="auto"
+                        Margin="20,25,20,0">
+                        <TextBlock
+                        x:Name="AnimeDescription"
+                        FontSize="14"
+                        FontWeight="Medium"
+                        Foreground="#C6C6C6"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Anime Description">
+                        </TextBlock>
+                    </Label>
+
+                </StackPanel>
+
+                <!--GRID ROW 1-->
+                <!--Menu Grid-->
+                <WrapPanel
+                    HorizontalAlignment="Left"
+                    Grid.Row="1"
+                    Margin="10,20,10,10">
+
+                    <ui:Button
+                        x:Name="SelectedAnime_EpisodesMenu"
+                        Appearance="Transparent"
+                        Margin="5"
+                        Padding="10" Click="SelectedAnime_EpisodesMenu_Click">
+                        <TextBlock 
+                            FontWeight="Bold"
+                            Text="  Episodes  "></TextBlock>
+                    </ui:Button>
+
+                    <ui:Button
+                        x:Name="SelectedAnime_CharactersMenu"
+                        Appearance="Transparent"
+                        Margin="5"
+                        Padding="10" Click="SelectedAnime_CharactersMenu_Click">
+                        <TextBlock 
+                            FontWeight="Bold"
+                            Text="  Characters  "></TextBlock>
+                    </ui:Button>
+
+                    <ui:Button
+                        x:Name="SelectedAnime_RelationsMenu"
+                        Appearance="Transparent"
+                        Margin="5"
+                        Padding="10" Click="SelectedAnime_RelationsMenu_Click">
+                        <TextBlock 
+                            FontWeight="Bold"
+                            Text="  Relations  "></TextBlock>
+                    </ui:Button>
+
+                    <ui:Button
+                        x:Name="SelectedAnime_ReccomendationsMenu"
+                        Appearance="Transparent"
+                        Margin="5"
+                        Padding="10" Click="SelectedAnime_ReccomendationsMenu_Click">
+                        <TextBlock 
+                            FontWeight="Bold"
+                            Text="  Recommendations  "></TextBlock>
+                    </ui:Button>
+                </WrapPanel>
+
+                <!--GRID ROW 2-->
+                <TextBlock 
+                    Grid.Row="2"
+                    x:Name="MenuTitle"
+                    FontSize="20"
+                    Margin="15,0,20,5"
+                    FontWeight="Bold"
+                    Foreground="White"
+                    Text="Episodes"></TextBlock>
+
+                <!--GRID ROW 3-->
+                <!--EPISODES-->
+                <StackPanel
+                    x:Name="EPStack"
+                    Grid.Row="3"
+                    Margin="0,0,0,10"
+                    Visibility="Visible">
+
+                    <ui:TextBox
+                        Margin="50,0,50,0"
+                        Grid.Column="0" 
+                        Icon="Search32"
+                        IconPlacement="Right"
+                        Width="auto"
+                        PlaceholderText="Search for episode..."
+                        Visibility="Collapsed"></ui:TextBox>
+
+                    <WrapPanel
+                            HorizontalAlignment="left"
+                            x:Name="EpisodesListPanel" 
+                            Width="auto" Height="auto" 
+                            ScrollViewer.CanContentScroll="True"
+                            VirtualizingPanel.IsVirtualizing="True" 
+                            VirtualizingPanel.IsContainerVirtualizable="True" 
+                            VirtualizingPanel.ScrollUnit="Pixel" 
+                            VirtualizingPanel.VirtualizationMode="Recycling" >
+
+                        </WrapPanel>
+
+
+                    <StackPanel
+                    x:Name="ViewMoreEPPanel"
+                    Grid.Row="4"
+                    HorizontalAlignment="Center">
+
+                        <ui:Button 
+                        x:Name="ViewMoreEPControl"
+                        Padding="6" 
+                        Margin="0,0,0,10"
+                        Icon="ChevronDown28" 
+                        MinWidth="100" 
+                        Appearance="Secondary" 
+                        FontSize="16" Click="ViewMoreEPControl_Click" />
+
+                        <ui:ProgressRing 
+                        x:Name="ViewMoreLoadControl"
+                        Margin="0,10,0,10"
+                        Progress="0" IsIndeterminate="True"></ui:ProgressRing>
+
+                    </StackPanel>
+
+
+                </StackPanel>
+
+                <!--CHARACTERS-->
+                <StackPanel
+                    x:Name="CharactersStack"
+                    Grid.Row="3"
+                    Margin="0,0,0,10"
+                    Visibility="Collapsed">
+
+                    <WrapPanel
+                            HorizontalAlignment="left"
+                            x:Name="CharactersPanel" 
+                            Width="auto" Height="auto" 
+                            ScrollViewer.CanContentScroll="True"
+                            VirtualizingPanel.IsVirtualizing="True" 
+                            VirtualizingPanel.IsContainerVirtualizable="True" 
+                            VirtualizingPanel.ScrollUnit="Pixel" 
+                            VirtualizingPanel.VirtualizationMode="Recycling" >
+
+                    </WrapPanel>
+
+
+                </StackPanel>
+
+                <!--RELATIONS-->
+                <StackPanel
+                    x:Name="RelationsStack"
+                    Grid.Row="3"
+                    Margin="0,0,0,10"
+                    Visibility="Collapsed">
+
+                    <WrapPanel
+                            HorizontalAlignment="left"
+                            x:Name="RelationsPanel" 
+                            Width="auto" Height="auto" 
+                            ScrollViewer.CanContentScroll="True"
+                            VirtualizingPanel.IsVirtualizing="True" 
+                            VirtualizingPanel.IsContainerVirtualizable="True" 
+                            VirtualizingPanel.ScrollUnit="Pixel" 
+                            VirtualizingPanel.VirtualizationMode="Recycling" >
+
+                    </WrapPanel>
+
+
+                </StackPanel>
+
+                <!--RECOMMENDATIONS-->
+                <StackPanel
+                    x:Name="RecommendationsStack"
+                    Grid.Row="3"
+                    Margin="0,0,0,10"
+                    Visibility="Collapsed">
+
+                    <WrapPanel
+                            HorizontalAlignment="left"
+                            x:Name="RecommendationsPanel" 
+                            Width="auto" Height="auto" 
+                            ScrollViewer.CanContentScroll="True"
+                            VirtualizingPanel.IsVirtualizing="True" 
+                            VirtualizingPanel.IsContainerVirtualizable="True" 
+                            VirtualizingPanel.ScrollUnit="Pixel" 
+                            VirtualizingPanel.VirtualizationMode="Recycling" >
+
+                    </WrapPanel>
+
+
+                </StackPanel>
+
+
+            </Grid>
+            
+            
+            
+        </Border>
+
+
+
+
+        <Border
+            x:Name="PageLoad"
+            Grid.Row="0"
+            Grid.RowSpan="3" 
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Background="{ui:ThemeResource ApplicationBackgroundBrush}"
+            Visibility="Hidden">
+            <StackPanel 
+                Margin="0,200,0,0"
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Top">
+                <ui:ProgressRing Margin="20" Progress="0" IsIndeterminate="True"></ui:ProgressRing>
+                <TextBlock 
+                    HorizontalAlignment="Center"
+                    Text="Loading..." 
+                    FontSize="24" 
+                    Foreground="White" 
+                    FontWeight="Bold"></TextBlock>
+            </StackPanel>
+        </Border>
+
+    </Grid>
+</ui:UiPage>

@@ -10,8 +10,10 @@
         WindowBackdropType="Mica"
         WindowCornerPreference="Round"
         WindowStartupLocation="CenterScreen"
-        Width="800"
+        Width="975"
         Height="600"
+        MinWidth="975"
+        MinHeight="600"
         mc:Ignorable="d"
         Title="Ozaki Anime" Loaded="UiWindow_Loaded">
 
@@ -27,7 +29,7 @@
                 <ui:ProgressRing Margin="20" Progress="0" IsIndeterminate="True"></ui:ProgressRing>
                 <TextBlock 
                     HorizontalAlignment="Center"
-                    Text="Preparing Anime.." 
+                    Text="Initializing.." 
                     FontSize="24" 
                     Foreground="White" 
                     FontWeight="Bold"></TextBlock>
@@ -176,7 +178,10 @@
                 Grid.RowSpan="3"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
-                ButtonLeftName="Click me if you can!" />
+                ButtonLeftName="Ok" >
+                <TextBlock x:Name="dialogContent" TextWrapping="Wrap"></TextBlock>
+
+            </ui:Dialog>
 
             <!--Page Load Client-->
             <Border 
@@ -203,7 +208,7 @@
 
             <!--TitleBar-->
             <Border
-                Margin="10,0,0,0"
+                Margin="15,0,0,0"
                 Grid.Column="1" Grid.ColumnSpan="2"
                 Grid.Row="0">
                 <Grid>

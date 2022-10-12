@@ -1,0 +1,265 @@
+﻿<ui:UiPage x:Class="OzakiAnimeWPF.Pages.Home"
+          xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+          xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+          xmlns:local="clr-namespace:OzakiAnimeWPF.Pages"
+          xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+          Background="{ui:ThemeResource ApplicationBackgroundBrush}"
+          mc:Ignorable="d"
+          Scrollable="True"
+          d:DesignHeight="800" d:DesignWidth="800"
+          Title="Home" Loaded="UiPage_Loaded" Unloaded="UiPage_Unloaded">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="600" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="250" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border
+            x:Name="HomeBorder"
+            Grid.Row="0"
+            Height="600"
+            CornerRadius="8,0,0,0"
+            Visibility="Visible">
+                <Border.OpacityMask>
+                    <LinearGradientBrush
+                    StartPoint="0,1"
+                    EndPoint="0,0">
+                        <GradientStop Offset=".3" Color="Red"></GradientStop>
+                        <GradientStop Offset="0.02" Color="Transparent"></GradientStop>
+
+                    </LinearGradientBrush>
+                </Border.OpacityMask>
+
+                <Border CornerRadius="8,0,0,0">
+                    <Border.Background>
+                        <RadialGradientBrush>
+                            <GradientStop Offset="0" Color="#1F000000" />
+                            <GradientStop Offset="1" Color="#4F000000" />
+                        </RadialGradientBrush>
+                    </Border.Background>
+                    <Grid>
+                        <StackPanel
+                        x:Name="PanelCover">
+                            <StackPanel.Background>
+                                <ImageBrush
+                            x:Name="HomeCover"
+                            ImageSource="/Images/Background/SampleHD2.jpg"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Stretch="UniformToFill" >
+                                </ImageBrush>
+                            </StackPanel.Background>
+                        </StackPanel>
+                        <WrapPanel
+                        Margin="64,84,64,64"
+                        Background="Transparent" Orientation="Horizontal">
+
+                            <Image 
+                            Width="auto" 
+                            Height="125" 
+                            Source="/Images/Logo/Ozaki-180.png" Stretch="Uniform" />
+
+                            <StackPanel
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+
+                                <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="40"
+                                FontWeight="Bold"
+                                Foreground="#FFFFFF"
+                                Text="Ozaki Anime" />
+
+                                <TextBlock
+                            FontSize="18"
+                            Foreground="#B7FFFFFF"
+                            Text="Watch everything on your desktop. It's completely free." />
+
+                                <ui:TextBox 
+                                x:Name="SearchAnime"
+                                Icon="Search24" 
+                                PlaceholderText="Search your anime..." 
+                                IconPlacement="Right" 
+                                Margin="0,5,0,0" KeyDown="SearchAnime_KeyDown"
+                                    Background="#60000000"
+                                    >
+                                </ui:TextBox>
+
+
+                            </StackPanel>
+
+
+
+                        </WrapPanel>
+                        <TextBlock
+                        Margin="12"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        FontSize="10"
+                        Foreground="#57FFFFFF"
+                        Text="" />
+                    </Grid>
+                </Border>
+            </Border>
+
+            <!--Start of Trending Card List-->
+            <Grid Grid.Row="1" Margin="0,-300,0,31">
+                <Grid.RowDefinitions>
+                    <RowDefinition x:Name="gridRow0" Height="auto" />
+                    <RowDefinition x:Name="gridRow1" Height="auto" />
+                    <RowDefinition x:Name="gridRow2" Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+
+                <!--Trending Now-->
+                <StackPanel 
+                x:Name="TrendingStack" 
+                Grid.Row="1"
+                Visibility="Visible">
+                    <Grid>
+
+                        <TextBlock
+                        Margin="64,0,0,18"
+                        FontSize="32"
+                        FontWeight="Bold"
+                        Foreground="#FFFFFF"
+                        Text="Trending Now"
+                        HorizontalAlignment="Left"/>
+
+                        <ui:Button 
+                        Margin="0,0,64,18" 
+                        FontSize="14" 
+                        Icon="ChevronRight48"
+                        HorizontalAlignment="Right"></ui:Button>
+                    </Grid>
+                    <ScrollViewer 
+                        x:Name="svTrending" 
+                        Margin="0,0,0,20"
+                        HorizontalScrollBarVisibility="Hidden" 
+                        CanContentScroll="False" 
+                        VerticalScrollBarVisibility="Disabled" 
+                        PreviewMouseWheel="svTrendingScrollViewer_PreviewMouseWheel" 
+                        PreviewMouseRightButtonDown="svTrending_PreviewMouseRightButtonDown" 
+                        PreviewMouseMove="svTrending_PreviewMouseMove" 
+                        PreviewMouseRightButtonUp="svTrending_PreviewMouseRightButtonUp" 
+                        MouseEnter="svTrending_MouseEnter" 
+                        MouseLeave="svTrending_MouseLeave">
+
+                        <VirtualizingStackPanel
+                            x:Name="TrendingPanel" 
+                            Width="auto" Height="auto" 
+                            VirtualizingPanel.IsVirtualizing="True" 
+                            VirtualizingPanel.IsContainerVirtualizable="True" 
+                            VirtualizingPanel.ScrollUnit="Pixel" 
+                            VirtualizingPanel.VirtualizationMode="Recycling" 
+                            Orientation="Horizontal" >
+
+                        </VirtualizingStackPanel>
+
+                    </ScrollViewer>
+
+                </StackPanel>
+
+
+
+            </Grid>
+        </Grid>
+
+        
+
+        <!--Start of New Release Card List-->
+        <Grid Grid.Row="2" Margin="0,-160,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition  Height="auto" />
+                <RowDefinition  Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+
+            <!--New Release-->
+            <StackPanel 
+                x:Name="RecentStack" 
+                Grid.Row="3"
+                Visibility="Visible">
+                <Grid>
+
+                    <TextBlock
+                        Margin="64,0,0,18"
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Foreground="#FFFFFF"
+                        Text="New Release"
+                        HorizontalAlignment="Left"/>
+
+                    <ui:Button 
+                        Margin="0,0,64,18" 
+                        FontSize="14" 
+                        Icon="ChevronRight48"
+                        HorizontalAlignment="Right"></ui:Button>
+                </Grid>
+
+                <ScrollViewer 
+                    x:Name="svRecent" 
+                    Margin="0,0,0,20" 
+                    HorizontalScrollBarVisibility="Hidden" 
+                    CanContentScroll="False" 
+                    VerticalScrollBarVisibility="Disabled" 
+                    PreviewMouseWheel="svRecent_PreviewMouseWheel"
+                    PreviewMouseRightButtonDown="svRecent_PreviewMouseRightButtonDown"
+                    PreviewMouseMove="svRecent_PreviewMouseMove"
+                    PreviewMouseRightButtonUp="svRecent_PreviewMouseRightButtonUp"
+                    MouseEnter="svRecent_MouseEnter"
+                    MouseLeave="svRecent_MouseLeave">
+
+                    <VirtualizingStackPanel
+                    x:Name="RecentPanel" 
+                    Width="auto" Height="auto" 
+                    VirtualizingPanel.IsVirtualizing="True" 
+                    VirtualizingPanel.IsContainerVirtualizable="True" 
+                    VirtualizingPanel.ScrollUnit="Pixel" 
+                    VirtualizingPanel.VirtualizationMode="Recycling" 
+                    Orientation="Horizontal" >
+
+                    </VirtualizingStackPanel>
+
+                </ScrollViewer>
+            </StackPanel>
+
+
+
+        </Grid>
+
+        <!--Loading for Cards-->
+        <Border x:Name="HomeLoader"
+                Grid.Row="0"
+                Grid.RowSpan="3"
+                Visibility="Hidden">
+
+            <ui:ProgressRing
+                    IsIndeterminate="True">
+
+            </ui:ProgressRing>
+        </Border>
+    </Grid>
+
+
+</ui:UiPage>

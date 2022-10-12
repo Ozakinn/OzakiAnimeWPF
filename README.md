@@ -11,7 +11,7 @@ Ozaki Anime
 - Windows 10 or later. (Latest Patch or Update)
 - .NET 6 (https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 -	Internet
-- Your very own host of API for faster load time (https://github.com/consumet/api.consumet.org). Default API is US based.
+- Hose your own API and paste it in the developer settings for faster load time (https://github.com/consumet/api.consumet.org). Default API is US based.
 
 ## Community
 **This app will receive updates for new features (unless I have time).** 

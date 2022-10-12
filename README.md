@@ -90,3 +90,11 @@ Settings
 
 ### Credits
 [Consumet API](https://github.com/consumet/api.consumet.org) - provides the information required for the application to function effectively. Don't forget to 🌟 the repo.
+
+## License
+
+Distributed under the MIT License. See [LICENSE](/LICENSE) for more information.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](/LICENSE)
+
+<p align="right">(<a href="#top">back to top</a>)</p>

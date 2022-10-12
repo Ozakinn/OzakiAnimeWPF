@@ -71,8 +71,8 @@
                     Grid.Row="1"
                     Margin="20,5,20,10"
                     x:Name="webviewBrowser" 
-                    MinHeight="700" MinWidth="700" 
-                    MaxHeight="700" Panel.ZIndex="1" >
+                    MinHeight="600"
+                    MaxHeight="1000" >
                 </wpf:WebView2>
 
                 <!--QUALITY AND CONTROL PANEL-->

@@ -81,5 +81,12 @@ Settings
 - Display Trending and Recent releases
 - Display Episodes, Characters, Voice Actors, Relations, and Recommendations
 
+### TODO
+- Changeable API Route (gogoanime, zoro, anime)
+- Manga
+- Comics
+- Movies
+- Light Novel
+
 ### Credits
 [Consumet API](https://github.com/consumet/api.consumet.org) - provides the information required for the application to function effectively. Don't forget to 🌟 the repo.

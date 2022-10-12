@@ -166,6 +166,22 @@
                         </Grid>
 
                     </ui:CardExpander>
+
+                    <ui:CardAction 
+                        x:Name="About"
+                        Margin="0,10,0,0"
+                        Icon="Info28" Click="About_Click">
+                        <StackPanel>
+                            <TextBlock
+                                FontSize="13"
+                                FontWeight="Medium"
+                                Text="About" />
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                Text="More info about Ozaki Anime." />
+                        </StackPanel>
+                    </ui:CardAction>
                 </StackPanel>
             </Grid>
 

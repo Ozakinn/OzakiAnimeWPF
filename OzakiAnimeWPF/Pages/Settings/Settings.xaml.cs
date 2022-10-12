@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pages.Settings;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -63,6 +64,11 @@ namespace OzakiAnimeWPF.Pages
         {
             SettingsFile.DefaultDevSettingSave(true);
             Snackbar("Developer Settings", "Reset Successfully!", SymbolRegular.CheckmarkCircle48);
+        }
+
+        private void About_Click(object sender, RoutedEventArgs e)
+        {
+            this.NavigationService.Navigate( new About());
         }
     }
 }

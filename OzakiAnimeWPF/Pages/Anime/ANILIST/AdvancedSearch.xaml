@@ -49,30 +49,31 @@
                     FontSize="16"
                     Text="Genres"></TextBlock>
                 <ComboBox
+                    x:Name="cboGenrePanel"
                 Height="35" Width="110" 
                 SelectedIndex="0">
-                    <CheckBox>
+                    <CheckBox x:Name="cboAny">
                         <TextBlock FontWeight="Medium">Any</TextBlock>
                     </CheckBox>
-                    <CheckBox>Action</CheckBox>
-                    <CheckBox>Adventure</CheckBox>
-                    <CheckBox>Cars</CheckBox>
-                    <CheckBox>Comedy</CheckBox>
-                    <CheckBox>Drama</CheckBox>
-                    <CheckBox>Ecchi</CheckBox>
-                    <CheckBox>Fantasy</CheckBox>
-                    <CheckBox>Horror</CheckBox>
-                    <CheckBox>Mahou Shoujo</CheckBox>
-                    <CheckBox>Mecha</CheckBox>
-                    <CheckBox>Music</CheckBox>
-                    <CheckBox>Mystery</CheckBox>
-                    <CheckBox>Psychological</CheckBox>
-                    <CheckBox>Romance</CheckBox>
-                    <CheckBox>Sci-Fi</CheckBox>
-                    <CheckBox>Slice of Life</CheckBox>
-                    <CheckBox>Sports</CheckBox>
-                    <CheckBox>Supernatural</CheckBox>
-                    <CheckBox>Thriller</CheckBox>
+                    <CheckBox x:Name="cboAction">Action</CheckBox>
+                    <CheckBox x:Name="cboAdventure">Adventure</CheckBox>
+                    <CheckBox x:Name="cboCars">Cars</CheckBox>
+                    <CheckBox x:Name="cboComedy">Comedy</CheckBox>
+                    <CheckBox x:Name="cboDrama">Drama</CheckBox>
+                    <CheckBox x:Name="cboEcchi">Ecchi</CheckBox>
+                    <CheckBox x:Name="cboFantasy">Fantasy</CheckBox>
+                    <CheckBox x:Name="cboHorror">Horror</CheckBox>
+                    <CheckBox x:Name="cboMahouShoujo">Mahou Shoujo</CheckBox>
+                    <CheckBox x:Name="cboMecha">Mecha</CheckBox>
+                    <CheckBox x:Name="cboMusic">Music</CheckBox>
+                    <CheckBox x:Name="cboMystery">Mystery</CheckBox>
+                    <CheckBox x:Name="cboPsychological">Psychological</CheckBox>
+                    <CheckBox x:Name="cboRomance">Romance</CheckBox>
+                    <CheckBox x:Name="cboSciFi">Sci-Fi</CheckBox>
+                    <CheckBox x:Name="cboSliceofLife">Slice of Life</CheckBox>
+                    <CheckBox x:Name="cboSports">Sports</CheckBox>
+                    <CheckBox x:Name="cboSupernatural">Supernatural</CheckBox>
+                    <CheckBox x:Name="cboThriller">Thriller</CheckBox>
                 </ComboBox>
             </StackPanel>
 
@@ -102,13 +103,9 @@
                     FontSize="16"
                     Text="Season"></TextBlock>
                 <ComboBox
+                    x:Name="cboSeason"
                 Height="35" Width="110" 
                 SelectedIndex="0">
-                    <TextBlock FontWeight="Medium">Any</TextBlock>
-                    <TextBlock>Fall</TextBlock>
-                    <TextBlock>Summer</TextBlock>
-                    <TextBlock>Spring</TextBlock>
-                    <TextBlock>Winter</TextBlock>
                 </ComboBox>
             </StackPanel>
 
@@ -122,16 +119,9 @@
                     FontSize="16"
                     Text="Format"></TextBlock>
                 <ComboBox
+                    x:Name="cboFormat"
                 Height="35" Width="105" 
                 SelectedIndex="0">
-                    <TextBlock FontWeight="Medium">Any</TextBlock>
-                    <TextBlock>TV Show</TextBlock>
-                    <TextBlock>TV Short</TextBlock>
-                    <TextBlock>OVA</TextBlock>
-                    <TextBlock>ONA</TextBlock>
-                    <TextBlock>Movie</TextBlock>
-                    <TextBlock>Special</TextBlock>
-                    <TextBlock>Music</TextBlock>
                 </ComboBox>
             </StackPanel>
 
@@ -145,13 +135,9 @@
                     FontSize="16"
                     Text="Airing Status"></TextBlock>
                 <ComboBox
+                    x:Name="cboAiringStatus"
                 Height="35" Width="135" 
                 SelectedIndex="0">
-                    <TextBlock FontWeight="Medium">Any</TextBlock>
-                    <TextBlock>Airing</TextBlock>
-                    <TextBlock>Finished</TextBlock>
-                    <TextBlock>Not Yet Aired</TextBlock>
-                    <TextBlock>Cancelled</TextBlock>
                 </ComboBox>
             </StackPanel>
 

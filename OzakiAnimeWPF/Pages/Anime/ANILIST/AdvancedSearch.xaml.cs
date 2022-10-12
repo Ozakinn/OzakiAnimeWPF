@@ -22,6 +22,9 @@ using System.Windows.Markup;
 using System.Drawing.Imaging;
 using System.IO;
 using Ozaki_Anime.Pages.SelectedAnime;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.DirectoryServices.ActiveDirectory;
 
 namespace Pages
 {
@@ -37,6 +40,15 @@ namespace Pages
         AnilistAdvancedSearch animeSearch;
         SettingsJson jsonSetting;
 
+        string advSearchParameter;
+        string query;
+        string userInputPARAM;
+        string GenrePARAM;
+        string YearPARAM;
+        string SeasonPARAM;
+        string FormatPARAM;
+        string AiringStatusPARAM;
+
         BitmapImage card_imgs;
         //avoid duplicate of page load
         private bool _isLoaded;
@@ -48,8 +60,12 @@ namespace Pages
 
             InitializeComponent();
             generateYear();
+            generateSeason();
+            generateFormat();
+            generateAiringStatus();
 
             txtSearch.Text = UserSearchContent;
+            advSearchParameter = jsonSetting.defaultAPILink + jsonSetting.defaultANILIST_AdvSearchPath + "?"+ "perPage=50";
         }
 
         public void generateYear()
@@ -63,6 +79,46 @@ namespace Pages
             {
                 cboYear.Items.Add(i);
             }
+        }
+
+        public void generateSeason()
+        {
+            var lblSeason = new TextBlock();
+            lblSeason.Text = "Any";
+            lblSeason.FontWeight = FontWeights.Medium;
+            cboSeason.Items.Add(lblSeason);
+            cboSeason.Items.Add("Winter");
+            cboSeason.Items.Add("Spring");
+            cboSeason.Items.Add("Summer");
+            cboSeason.Items.Add("Fall");
+
+        }
+
+        public void generateFormat()
+        {
+            var lblFormat = new TextBlock();
+            lblFormat.Text = "Any";
+            lblFormat.FontWeight = FontWeights.Medium;
+            cboFormat.Items.Add(lblFormat);
+            cboFormat.Items.Add("TV Show");
+            cboFormat.Items.Add("TV Short");
+            cboFormat.Items.Add("OVA");
+            cboFormat.Items.Add("ONA");
+            cboFormat.Items.Add("Movie");
+            cboFormat.Items.Add("Special");
+            cboFormat.Items.Add("Music");
+        }
+
+        public void generateAiringStatus()
+        {
+            var lblAiring = new TextBlock();
+            lblAiring.Text = "Any";
+            lblAiring.FontWeight = FontWeights.Medium;
+            cboAiringStatus.Items.Add(lblAiring);
+            cboAiringStatus.Items.Add("Airing");
+            cboAiringStatus.Items.Add("Finished");
+            cboAiringStatus.Items.Add("Not Yet Aired");
+            cboAiringStatus.Items.Add("Cancelled");
         }
 
         private async void UiPage_Loaded(object sender, RoutedEventArgs e)
@@ -101,28 +157,32 @@ namespace Pages
             ServicePointManager.Expect100Continue = true;
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
 
-            string query = txtSearch.Text.Replace(" ","");
-            string paramKey = "query=" + txtSearch.Text;
-            string paramPerPage = "perPage=50";
-            if (query.Length >= 1)
-            {
-                await searchAnime_urlValidation(jsonSetting.defaultAPILink + jsonSetting.defaultANILIST_AdvSearchPath + "?" + paramKey + "&" + paramPerPage);
-            }
-            else
-            {
-                await searchAnime_urlValidation(jsonSetting.defaultAPILink + jsonSetting.defaultANILIST_AdvSearchPath + "?" + paramPerPage);
-            }
+            //CHECK FOR PARAMETERS FIRST
+            checkUserInput();
+            checkGenres();
+            checkYear();
+            checkSeason();
+            checkFormat();
+            checkAiring();
+
+            //BUILD THE QUERY
+            queryBuilder();
+
+
+            //System.Windows.MessageBox.Show(query);
+            await searchAnime_urlValidation(query);
+            
 
             var client = new HttpClient();
             //string selected_anime = await client.GetStringAsync(jsonSetting.defaultAPILink + jsonSetting.defaultANILIST_AnimeInfoPath + trending_id);
-            //System.Windows.MessageBox.Show(jsonSetting.defaultAPILink + jsonSetting.defaultANILIST_AnimeInfoPath + trending_id);
             animeSearch = JsonConvert.DeserializeObject<AnilistAdvancedSearch>(animeSearchJSON);
-            
-            generateResult(animeSearch);
+
+            await Task.WhenAll(generateResult(animeSearch));
+            //await generateResult(animeSearch);
         }
 
 
-        public async void generateResult(AnilistAdvancedSearch query)
+        public async Task generateResult(AnilistAdvancedSearch query)
         {
             WrapPanel dummy = new WrapPanel();
             for (int i = 0; i < query.results.Length; i++)
@@ -262,6 +322,229 @@ namespace Pages
             System.Windows.Controls.StackPanel panel = ((dynamic)buttonMouseEnter.Tag).panel;
 
             panel.Visibility = Visibility.Visible;
+        }
+
+        //BUILDS THE HTTP REQUEST
+        public void queryBuilder()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(advSearchParameter);
+
+            if (userInputPARAM != "")
+            {
+                sb.Append("&"+userInputPARAM);
+            }
+            if (GenrePARAM != "")
+            {
+                sb.Append("&"+GenrePARAM);
+            }
+            if (YearPARAM != "")
+            {
+                sb.Append("&" + YearPARAM);
+            }
+            if (SeasonPARAM != "")
+            {
+                sb.Append("&" + SeasonPARAM);
+            }
+            if (FormatPARAM != "")
+            {
+                sb.Append("&" + FormatPARAM);
+            }
+            if (AiringStatusPARAM != "")
+            {
+                sb.Append("&" + AiringStatusPARAM);
+            }
+
+            query = sb.ToString();
+        }
+        //CHECK FOR USER INPUT
+        public void checkUserInput()
+        {
+            string queryUserinput = txtSearch.Text.Replace(" ", "");
+            if (queryUserinput.Length >= 1)
+            {
+                userInputPARAM = "query=" + txtSearch.Text;
+            }
+            else
+            {
+                userInputPARAM = "";
+            }
+        }
+
+        //CHECK FOR GENRES
+        public void checkGenres()
+        {
+            List<string> genres = new List<string>();
+            string[] genresArray;
+            if (cboAction.IsChecked == true)
+            {
+                genres.Add("\"Action\"");
+            }
+            if (cboAdventure.IsChecked == true)
+            {
+                genres.Add("\"Adventure\"");
+            }
+            if (cboCars.IsChecked == true)
+            {
+                genres.Add("\"Cars\"");
+            }
+            if (cboComedy.IsChecked == true)
+            {
+                genres.Add("\"Comedy\"");
+            }
+            if (cboDrama.IsChecked == true)
+            {
+                genres.Add("\"Drama\"");
+            }
+            if (cboEcchi.IsChecked == true)
+            {
+                genres.Add("\"Ecchi\"");
+            }
+            if (cboFantasy.IsChecked == true)
+            {
+                genres.Add("\"Fantasy\"");
+            }
+            if (cboHorror.IsChecked == true)
+            {
+                genres.Add("\"Horror\"");
+            }
+            if (cboMahouShoujo.IsChecked == true)
+            {
+                genres.Add("\"Mahou Shoujo\"");
+            }
+            if (cboMecha.IsChecked == true)
+            {
+                genres.Add("\"Mecha\"");
+            }
+            if (cboMusic.IsChecked == true)
+            {
+                genres.Add("\"Music\"");
+            }
+            if (cboMystery.IsChecked == true)
+            {
+                genres.Add("\"Mystery\"");
+            }
+            if (cboPsychological.IsChecked == true)
+            {
+                genres.Add("\"Psychological\"");
+            }
+            if (cboRomance.IsChecked == true)
+            {
+                genres.Add("\"Romance\"");
+            }
+            if (cboSciFi.IsChecked == true)
+            {
+                genres.Add("\"Sci-Fi\"");
+            }
+            if (cboSliceofLife.IsChecked == true)
+            {
+                genres.Add("\"Slice of Life\"");
+            }
+            if (cboSports.IsChecked == true)
+            {
+                genres.Add("\"Sports\"");
+            }
+            if (cboSupernatural.IsChecked == true)
+            {
+                genres.Add("\"Supernatural\"");
+            }
+            if (cboThriller.IsChecked == true)
+            {
+                genres.Add("\"Thriller\"");
+            }
+            if (cboAny.IsChecked == true)
+            {
+                genres.Clear();
+            }
+            genresArray = genres.ToArray();
+            if (genresArray.Length != 0)
+            {
+                GenrePARAM = "genres=[" + String.Join(",", genresArray) + "]";
+            }
+            else
+            {
+                GenrePARAM = "";
+            }
+
+            //System.Windows.MessageBox.Show(GenrePARAM);
+        }
+
+        //CHECK FOR YEAR
+        public void checkYear()
+        {
+            if (cboYear.SelectedIndex != 0)
+            {
+                YearPARAM = "year=" + cboYear.SelectedItem.ToString();
+            }
+            else
+            {
+                YearPARAM = "";
+            }
+        }
+
+        //CHECK FOR SEASON
+        public void checkSeason()
+        {
+            if (cboSeason.SelectedIndex != 0)
+            {
+                SeasonPARAM = "season=" + cboSeason.SelectedItem.ToString().ToUpper();
+            }
+            else
+            {
+                SeasonPARAM = "";
+            }
+        }
+
+        //CHECK FOR FORMAT
+        public void checkFormat()
+        {
+            if (cboFormat.SelectedIndex != 0)
+            {
+                string format = cboFormat.SelectedItem.ToString().ToUpper();
+                string formatSTEP1 = format.Replace(" ", "_");
+                if (formatSTEP1 == "TV_SHOW")
+                {
+                    formatSTEP1 = "TV";
+                    FormatPARAM = "format=" + formatSTEP1;
+                }
+                else
+                {
+                    FormatPARAM = "format=" + formatSTEP1;
+                }
+            }
+            else
+            {
+                FormatPARAM = "";
+            }
+        }
+
+        //CHECK FOR AIRING STUTUS
+        public void checkAiring()
+        {
+            if (cboAiringStatus.SelectedIndex != 0)
+            {
+                string status = cboAiringStatus.SelectedItem.ToString().ToUpper();
+                string statusSTEP1 = status.Replace(" ", "_");
+
+                if (statusSTEP1 == "AIRING")
+                {
+                    statusSTEP1 = "RELEASING";
+                    AiringStatusPARAM = "status=" + statusSTEP1;
+                }
+                else if (statusSTEP1 == "NOT_YET_AIRED")
+                {
+                    statusSTEP1 = "NOT_YET_RELEASED";
+                    AiringStatusPARAM = "status=" + statusSTEP1;
+                }
+                else
+                {
+                    AiringStatusPARAM = "status=" + statusSTEP1;
+                }
+            }
+            else
+            {
+                AiringStatusPARAM = "";
+            }
         }
 
         public async Task searchAnime_urlValidation(string url)

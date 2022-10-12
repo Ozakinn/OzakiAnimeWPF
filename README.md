@@ -93,8 +93,6 @@ Settings
 
 ## License
 
-Distributed under the MIT License. See [LICENSE](/LICENSE) for more information.
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](/LICENSE)
+Distributed under the GNU General Public License v3.0 License. See [LICENSE](/LICENSE) for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>

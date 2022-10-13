@@ -11,7 +11,7 @@ Ozaki Anime
 - Windows 10 or later. (Latest Patch or Update)
 - .NET 6 (https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 -	Internet
-- Your very own host of API for faster load time (https://github.com/consumet/api.consumet.org). Default API is US based.
+- Hose your own API and paste it in the developer settings for faster load time (https://github.com/consumet/api.consumet.org). Default API is US based.
 
 ## Community
 **This app will receive updates for new features (unless I have time).** 
@@ -25,8 +25,53 @@ I would appreciate it if you could offer me a cup of coffee. ☕💖
 <a href="https://www.buymeacoffee.com/Ozaki" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/lato-yellow.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
 ## User Interface v0.5
+<p align="center">
+Anime Home
+<br>
+<img width="auto" height="400" src="OzakiAnimeWPF/Images/Screenshots/s1.png">
+</p>
 
-<img width="auto" height="25%" src="MCModpackInstaller/Images/UI/ScrubsUI.gif">
+<p align="center">
+Anime Info and Episodes
+<br>
+<img width="auto" height="400" src="OzakiAnimeWPF/Images/Screenshots/s2.png">
+</p>
+
+<p align="center">
+Anime Characters and Voice Actors
+<br>
+<img width="auto" height="400" src="OzakiAnimeWPF/Images/Screenshots/s3.png">
+</p>
+
+<p align="center">
+Relations
+<br>
+<img width="auto" height="400" src="OzakiAnimeWPF/Images/Screenshots/s4.png">
+</p>
+
+<p align="center">
+Recommendations
+<br>
+<img width="auto" height="400" src="OzakiAnimeWPF/Images/Screenshots/s5.png">
+</p>
+
+<p align="center">
+Play Episode
+<br>
+<img width="auto" height="400" src="OzakiAnimeWPF/Images/Screenshots/s6.png">
+</p>
+
+<p align="center">
+Search
+<br>
+<img width="auto" height="400" src="OzakiAnimeWPF/Images/Screenshots/s8.png">
+</p>
+
+<p align="center">
+Settings
+<br>
+<img width="auto" height="400" src="OzakiAnimeWPF/Images/Screenshots/s7.png">
+</p>
 
 ### Features
 - Advanced Search for Anime (Genres, Year, Season, Format, Airing Status)
@@ -35,3 +80,19 @@ I would appreciate it if you could offer me a cup of coffee. ☕💖
 - Show Episode Countdown
 - Display Trending and Recent releases
 - Display Episodes, Characters, Voice Actors, Relations, and Recommendations
+
+### TODO
+- Changeable API Route (gogoanime, zoro, anime)
+- Manga
+- Comics
+- Movies
+- Light Novel
+
+### Credits
+[Consumet API](https://github.com/consumet/api.consumet.org) - provides the information required for the application to function effectively. Don't forget to 🌟 the repo.
+
+## License
+
+Distributed under the GNU General Public License v3.0 License. See [LICENSE](/LICENSE) for more information.
+
+<p align="right">(<a href="#top">back to top</a>)</p>

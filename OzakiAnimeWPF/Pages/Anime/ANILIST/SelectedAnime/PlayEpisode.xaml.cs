@@ -135,23 +135,31 @@ namespace Ozaki_Anime.Pages.SelectedAnime
 
         private async void UiPage_Loaded(object sender, RoutedEventArgs e)
         {
-            PageLoad.Visibility = Visibility.Visible;
-            webviewBrowser.Visibility = Visibility.Hidden;
-            await SelectedAnimeEpID_Load();
-            isDataComplete = true;
-            int x = 0;
-            while (x !=1)
+            if (!_isLoaded)
             {
-                if (isNavigateComplete == true && isDataComplete == true)
+                _isLoaded = true;
+                PageLoad.Visibility = Visibility.Visible;
+                webviewBrowser.Visibility = Visibility.Hidden;
+                await SelectedAnimeEpID_Load();
+                isDataComplete = true;
+                int x = 0;
+                while (x != 1)
                 {
-                    x = 1;
-                    urlQualityContent = selectedepisode.sources[0].url;
-                    SendLinkToPlayer(selectedepisode.sources[0].url);
+                    if (isNavigateComplete == true && isDataComplete == true)
+                    {
+                        x = 1;
+                        urlQualityContent = selectedepisode.sources[0].url;
+                        SendLinkToPlayer(selectedepisode.sources[0].url);
 
-                    await Task.Delay(1000);
-                    webviewBrowser.Visibility = Visibility.Visible;
-                    PageLoad.Visibility = Visibility.Hidden;
+                        await Task.Delay(1000);
+                        webviewBrowser.Visibility = Visibility.Visible;
+                        PageLoad.Visibility = Visibility.Hidden;
+                    }
                 }
+            }
+            else
+            {
+                SendLinkToPlayer(selectedepisode.sources[0].url);
             }
         }
 

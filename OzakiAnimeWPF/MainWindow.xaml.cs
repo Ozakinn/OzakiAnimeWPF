@@ -1,4 +1,6 @@
 ﻿using OzakiAnimeWPF.Pages;
+using Squirrel;
+using Squirrel.Sources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,10 +34,27 @@ namespace OzakiAnimeWPF
         public MainWindow()
         {
             InitializeComponent();
+            CheckforUpdates();
 
             SettingsFile.DefaultDevSettingSave(false);
 
             //SplashScreen();
+        }
+
+        private async Task CheckforUpdates()
+        {
+            using (var mgr = new GithubUpdateManager(@"https://github.com/Ozakinn/OzakiAnimeWPF"))
+            {
+
+                var newVersion = await mgr.UpdateApp();
+                // optionally restart the app automatically, or ask the user if/when they want to restart
+                if (newVersion != null)
+                {
+                    UpdateManager.RestartApp();
+                }
+            }
+
+            
         }
 
         private async void UiWindow_Loaded(object sender, RoutedEventArgs e)

@@ -207,7 +207,7 @@
                         FontSize="22"
                         FontWeight="Bold"
                         Foreground="#FFFFFF"
-                        Text="New Release"
+                        Text="Recent"
                         HorizontalAlignment="Left"/>
 
                     <ui:Button 

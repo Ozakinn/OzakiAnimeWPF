@@ -6,6 +6,7 @@
         version="1.2.3.4"
         processorArchitecture="x86"
     />
+	<SquirrelAwareVersion xmlns="urn:schema-squirrel-com:asm.v1">1</SquirrelAwareVersion>
 	<description>Contoso Example Application</description>
 	<compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
 		<application>

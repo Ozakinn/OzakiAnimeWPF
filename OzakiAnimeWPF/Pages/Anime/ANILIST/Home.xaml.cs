@@ -636,9 +636,17 @@ namespace OzakiAnimeWPF.Pages
         //URL Checker if API is active or down
         public async Task<bool> UrlIsValid(string url)
         {
+            var sw = new Stopwatch();
+            sw.Start();
+
+            
+            
             HttpClient client = new HttpClient();
             HttpResponseMessage response = await client.GetAsync(url);
-            
+
+            sw.Stop();
+            var elapsed = sw.ElapsedMilliseconds;
+            //System.Windows.MessageBox.Show("took: " + elapsed + "ms");
 
             if (response.IsSuccessStatusCode)
             {

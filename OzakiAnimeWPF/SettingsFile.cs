@@ -13,7 +13,7 @@ namespace OzakiAnimeWPF
     public class DefaultPaths
     {
         public string filename = "OzakiAnimeConfig.json";
-        public string defaultAPILink = "https://ozakianime-wpf.herokuapp.com";
+        public string defaultAPILink = "https://api.consumet.org";
 
         //gogoanime routes
         public string defaultGOGO_TopAirPath = "/anime/gogoanime/top-airing";

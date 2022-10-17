@@ -88,6 +88,9 @@ Settings
 - Movies
 - Light Novel
 
+### Downloads
+Looking for the download link? go here [Releases](https://github.com/Ozakinn/OzakiAnimeWPF/releases) and download setup.exe
+
 ### Credits
 [Consumet API](https://github.com/consumet/api.consumet.org) - provides the information required for the application to function effectively. Don't forget to 🌟 the repo.
 

@@ -11,7 +11,7 @@ Ozaki Anime
 - Windows 10 or later. (Latest Patch or Update)
 - .NET 6 (https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 -	Internet
-- Host your own API and paste it in the developer settings for faster load time (https://github.com/consumet/api.consumet.org). Default API is US based.
+- [OPTIONAL] Host your own API and paste it in the developer settings, if you prefer faster load time (https://github.com/consumet/api.consumet.org).
 
 ## Community
 **This app will receive updates for new features (unless I have time).** 
@@ -78,6 +78,7 @@ Settings
 - Play, Prev Episode, Fullscreen(ESC to exit fullscreen), Next Episode, Picture-Picture Control.
 - Quality Selection (1080p, 720p, 480p, 360p, 240p, 144p)
 - Show Episode Countdown
+- Account (Favorites)
 - Display Trending and Recent releases
 - Display Episodes, Characters, Voice Actors, Relations, and Recommendations
 

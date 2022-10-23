@@ -82,9 +82,11 @@
             <!--INFOs-->
             <WrapPanel
                 Margin="50,10,50,0">
-                <ui:Button Appearance="Info" 
+                <ui:Button 
+                    x:Name="buildVersion"
+                    Appearance="Info" 
                           FontWeight="Medium" 
-                          Content="Build Version 0.5.2"
+                          Content=""
                            Margin="0,0,5,0"
                            IsEnabled="False"/>
 
@@ -92,6 +94,11 @@
                           FontWeight="Medium" 
                           Content="Github"
                            Margin="0,0,5,0" Click="Github_Click"/>
+
+                <ui:Button x:Name="CheckUpdate" Appearance="Caution" 
+                          FontWeight="Medium" 
+                          Content="Check for Updates"
+                           Margin="0,0,5,0" Click="CheckUpdate_Click"/>
             </WrapPanel>
         </StackPanel>
 

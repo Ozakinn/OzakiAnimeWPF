@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Ozaki_Anime.Pages.SelectedAnime;
 using OzakiAnimeWPF.Data;
+using OzakiAnimeWPF.Pages.UserAccount;
+using Pages;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,6 +14,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection.Emit;
+using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,6 +44,8 @@ namespace OzakiAnimeWPF.Pages
         string trending_Img;
 
         string selected_anime;
+        BitmapImage anime_img;
+        BitmapImage cover_img;
         BitmapImage ep_imgs;
         BitmapImage char_imgs;
         BitmapImage charVA_imgs;
@@ -52,12 +57,19 @@ namespace OzakiAnimeWPF.Pages
 
         SettingsJson jsonSetting;
 
-        //URL checker
-        bool checkUrl;
+        //check 50+ episodes
+        bool is50plus = false;
+        string[] cboEpContent;
+        int[] cboEpValue;
+
+        //check favorite
+        bool isFavorite;
 
         // Cancel Async
         CancellationTokenSource source = new CancellationTokenSource();
 
+        //task for ep images
+        List<string> img_Content = new List<string>();
 
         DateTime AirDate = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
         string ep;
@@ -69,18 +81,19 @@ namespace OzakiAnimeWPF.Pages
 
         //avoid duplicate of page load
         private bool _isLoaded;
-        public SelectedAnime(string trendingid, string trending_img)
+        public SelectedAnime(string trendingid)
         {
 
             trending_id = trendingid;
-            trending_Img = trending_img;
 
             jsonSetting = new SettingsJson();
             jsonSetting = SettingsFile.SettingRead();
 
             InitializeComponent();
 
-            //this.Loaded += UiPage_Loaded;
+            
+
+            
         }
 
         private async void UiPage_Loaded(object sender, RoutedEventArgs e)
@@ -92,11 +105,12 @@ namespace OzakiAnimeWPF.Pages
                 PageLoad.Visibility = Visibility.Visible;
                 EPStack.Visibility = Visibility.Hidden;
 
-
+                var sw = new Stopwatch();
+                sw.Start();
                 await SelectedAnime_Load();
-
-                EPStack.Visibility = Visibility.Visible;
-                PageLoad.Visibility = Visibility.Hidden;
+                sw.Stop();
+                var elapsed = sw.ElapsedMilliseconds;
+                //System.Windows.MessageBox.Show("took: " + elapsed + "ms");
 
             }
 
@@ -134,12 +148,22 @@ namespace OzakiAnimeWPF.Pages
             //System.Windows.MessageBox.Show(jsonSetting.defaultAPILink + jsonSetting.defaultANILIST_AnimeInfoPath + trending_id);
             selectedanime = JsonConvert.DeserializeObject<anilist_Info>(selected_anime);
 
+            isFavorite = AccountFavorites.Anime_Anilist_CheckFavorite(selectedanime.id);
+
             renderData(selectedanime);
         }
 
-        public void renderData(anilist_Info info)
+        public async void renderData(anilist_Info info)
         {
             EpisodeMenu(info);
+
+
+
+            await Task.Delay(500);
+            EPStack.Visibility = Visibility.Visible;
+            PageLoad.Visibility = Visibility.Hidden;
+
+            FavoriteButton_Status();
 
             //CHECK IF CHARACTERS IS AVAILABLE
             if (info.characters is not null)
@@ -173,10 +197,10 @@ namespace OzakiAnimeWPF.Pages
             }
         }
 
-        public async void EpisodeMenu(anilist_Info info)
+        public void EpisodeMenu(anilist_Info info)
         {
-            //Declare and initialize image to bitmap
-            await ep_image_urlValidation(info.image);
+            //Display Image
+            animeImgBitImage(info.image);
 
             //IMAGE DETAILS
             animeImg.ImageSource = ep_imgs;
@@ -302,6 +326,16 @@ namespace OzakiAnimeWPF.Pages
             {
                 GenresPanel.Visibility = Visibility.Collapsed;
             }
+            //SUB/DUB
+            if (info.subOrDub is not null)
+            {
+                SuborDubPanel.Visibility = Visibility.Visible;
+                SuborDubControl.Text = info.subOrDub.ToUpper();
+            }
+            else
+            {
+                SuborDubPanel.Visibility = Visibility.Collapsed;
+            }
 
             //ANIME COVER
             animeCoverBitImage(info.cover);
@@ -328,7 +362,8 @@ namespace OzakiAnimeWPF.Pages
             }
 
             //GENERATE EPISODES CARD
-            GenerateEpisodesCard(info, isViewMore);
+            fillEpCombobox(info);
+            //GenerateEpisodesCard(info);
         }
 
         public async void CharactersMenu(anilist_Info info)
@@ -666,53 +701,138 @@ namespace OzakiAnimeWPF.Pages
             }
         }
 
-        public async void GenerateEpisodesCard(anilist_Info data, bool isViewmore)
+        public void GenerateEpisodesCard(anilist_Info data)
         {
-            int sum = lastEPCount - data.episodes.Length;
-            int sumPositive = sum * -1;
+            img_Content.Clear();
+            EpisodesListPanel.Visibility = Visibility.Collapsed;
 
-            ViewMoreLoadControl.Visibility = Visibility.Visible;
-            if (data.episodes.Length >= 100 && isViewmore == false)
+            if (is50plus == true)
             {
-                ViewMoreEPControl.Visibility = Visibility.Collapsed;
-                lastEPCount = 100;
-                for (int i = 0; i < 100; i++)
+                string cboSelected = EpComboBox.SelectedItem.ToString();
+                cboSelected.Replace(" ","");
+                string[] array = cboSelected.Split("-");
+                int startEP = int.Parse(array[0]);
+                int EndEP = int.Parse(array[1]);
+
+                WrapPanel dummy = new WrapPanel();
+                for (int i = startEP-1; i < EndEP; i++)
                 {
                     var epCardPanel = new System.Windows.Controls.StackPanel();
                     var epText = new System.Windows.Controls.TextBlock();
                     var epBadge = new Wpf.Ui.Controls.Badge();
                     var epCard = new Wpf.Ui.Controls.Button();
 
-                    //Declare and initialize image to bitmap
-                    await ep_image_urlValidation(data.episodes[i].image);
-                    /*
-                    var httpClint = new HttpClient();
-                    var imageBytes = await httpClint.GetStreamAsync(data.episodes[i].image);
+                    img_Content.Add(data.episodes[i].image);
 
-                    var bitmapImage = new BitmapImage();
-                    bitmapImage.BeginInit();
-                    bitmapImage.StreamSource = imageBytes;
-                    bitmapImage.EndInit();
-                    */
+                    object btn = this.FindName("epCard_" + i);
 
-                    //Cover Artwork without Opacity
-                    ImageBrush cardCover = new ImageBrush();
-                    cardCover.Stretch = Stretch.UniformToFill;
-                    cardCover.Opacity = 0.20;
-                    cardCover.ImageSource = ep_imgs;
-
-
-                    //Cover Artwork with Opacity
-                    ImageBrush cardCoverOpacity = new ImageBrush();
-                    cardCoverOpacity.Stretch = Stretch.UniformToFill;
-                    cardCoverOpacity.ImageSource = ep_imgs;
-                    cardCoverOpacity.Opacity = 1;
+                    if (btn is not null)
+                    {
+                        if (((Wpf.Ui.Controls.Button)btn).Name == "epCard_" + i)
+                        {
+                            UnregisterName("epCard_" + i);
+                        }
+                    }
 
                     //Modify Popular Card Style
-                    epCard.Background = cardCover;
+                    epCard.Name = "epCard_" + i;
+                    RegisterName("epCard_" + i, epCard);
                     epCard.Height = 175;
                     epCard.Width = 300;
-                    epCard.MouseOverBackground = cardCoverOpacity;
+                    epCard.ToolTip = data.episodes[i].description;
+                    epCard.Tag = new
+                    {
+                        panel = epCardPanel,
+                        episode_id = data.episodes[i].id,
+                        ep_num = i.ToString()
+                    };
+
+                    var recent_title = data.episodes[i].title;
+                    var recent_episodeNum = data.episodes[i].number;
+                    //var recent_subordub = recent_array_subordub[i].ToString().ToUpper();
+
+                    epBadge.FontSize = 10;
+                    epBadge.FontWeight = FontWeights.Medium;
+                    epBadge.Background = Brushes.LimeGreen;
+                    epBadge.VerticalAlignment = VerticalAlignment.Top;
+                    epBadge.HorizontalAlignment = HorizontalAlignment.Center;
+                    epBadge.Content = "EP " + recent_episodeNum;
+
+                    epText.FontSize = 16;
+                    epText.FontWeight = FontWeights.Bold;
+                    epText.TextAlignment = TextAlignment.Center;
+                    epText.TextWrapping = TextWrapping.Wrap;
+                    epText.Text = recent_title;
+
+                    epCardPanel.Name = "epCardPanel";
+                    epCardPanel.Children.Add(epText);
+                    epCardPanel.Children.Add(epBadge);
+
+                    epCard.Content = epCardPanel;
+                    epCardPanel.Visibility = Visibility.Visible;
+
+                    epCard.Margin = new System.Windows.Thickness(15, 7.5, 0, 7.5);
+
+                    //Render and Add the control for the episodes
+                    dummy.Children.Add(epCard);
+
+                    epCard.Click += new RoutedEventHandler(EPCard_Click);
+                    epCard.MouseEnter += new MouseEventHandler(epCard_MouseEnter);
+                    epCard.MouseLeave += new MouseEventHandler(epCard_MouseLeave);
+
+
+                }
+
+                var dummyChild = dummy.Children;
+                List<UIElement> elements = new List<UIElement>();
+                EpisodesListPanel.Children.Clear();
+
+                foreach (UIElement yow in dummyChild)
+                {
+                    elements.Add(yow);
+                }
+
+                foreach (UIElement childs in elements)
+                {
+
+                    var parent = VisualTreeHelper.GetParent(childs);
+                    var parentAsPanel = parent as Panel;
+                    if (parentAsPanel != null)
+                    {
+                        parentAsPanel.Children.Remove(childs);
+                    }
+                    var parentAsContentControl = parent as ContentControl;
+                    if (parentAsContentControl != null)
+                    {
+                        parentAsContentControl.Content = null;
+                    }
+                    var parentAsDecorator = parent as Decorator;
+                    if (parentAsDecorator != null)
+                    {
+                        parentAsDecorator.Child = null;
+                    }
+
+                    EpisodesListPanel.Children.Add(childs);
+                }
+                generateEPIMG(startEP);
+            }
+            else
+            {
+                for (int i = 0; i < data.episodes.Length; i++)
+                {
+                    var epCardPanel = new System.Windows.Controls.StackPanel();
+                    var epText = new System.Windows.Controls.TextBlock();
+                    var epBadge = new Wpf.Ui.Controls.Badge();
+                    var epCard = new Wpf.Ui.Controls.Button();
+
+                    img_Content.Add(data.episodes[i].image);
+
+
+                    //Modify Popular Card Style
+                    epCard.Name = "epCard_" + i;
+                    RegisterName("epCard_" + i, epCard);
+                    epCard.Height = 175;
+                    epCard.Width = 300;
                     epCard.ToolTip = data.episodes[i].description;
                     epCard.Tag = new
                     {
@@ -756,371 +876,130 @@ namespace OzakiAnimeWPF.Pages
 
 
                 }
-
-                ViewMoreEPControl.Visibility = Visibility.Visible;
-                ViewMoreLoadControl.Visibility = Visibility.Collapsed;
-
+                generateEPIMG(1);
             }
-            else if (isViewmore == true && sumPositive >= 100)
+
+
+            EpisodesListPanel.Visibility = Visibility.Visible;
+        }
+
+        public async Task generateEPIMG(int startEP)
+        {
+            int i = startEP-1;
+            foreach (string url in img_Content)
             {
+                await ep_image_urlValidation(url);
 
-                var lastChild = EpisodesListPanel.Children;
-                WrapPanel dummy = new WrapPanel();
-                int limiter = lastEPCount + 100;
+                //Cover Artwork without Opacity
+                ImageBrush cardCover = new ImageBrush();
+                cardCover.Stretch = Stretch.UniformToFill;
+                cardCover.Opacity = 0.20;
+                cardCover.ImageSource = ep_imgs;
 
-                //System.Windows.MessageBox.Show("1 | "+ lastEPCount.ToString());
 
-                for (int i = lastEPCount; i < limiter; i++)
+                //Cover Artwork with Opacity
+                ImageBrush cardCoverOpacity = new ImageBrush();
+                cardCoverOpacity.Stretch = Stretch.UniformToFill;
+                cardCoverOpacity.ImageSource = ep_imgs;
+                cardCoverOpacity.Opacity = 1;
+
+                object btn = this.FindName("epCard_"+i);
+
+                if (btn.GetType() == typeof(Wpf.Ui.Controls.Button))
                 {
-                    var epCardPanel = new System.Windows.Controls.StackPanel();
-                    var epText = new System.Windows.Controls.TextBlock();
-                    var epBadge = new Wpf.Ui.Controls.Badge();
-                    var epCard = new Wpf.Ui.Controls.Button();
-
-                    //Declare and initialize image to bitmap
-                    await ep_image_urlValidation(data.episodes[i].image);
-                    /*
-                    var httpClint = new HttpClient();
-                    var imageBytes = await httpClint.GetStreamAsync(data.episodes[i].image);
-
-                    var bitmapImage = new BitmapImage();
-                    bitmapImage.BeginInit();
-                    bitmapImage.StreamSource = imageBytes;
-                    bitmapImage.EndInit();
-                    */
-
-                    //Cover Artwork without Opacity
-                    ImageBrush cardCover = new ImageBrush();
-                    cardCover.Stretch = Stretch.UniformToFill;
-                    cardCover.Opacity = 0.20;
-                    cardCover.ImageSource = ep_imgs;
-
-
-                    //Cover Artwork with Opacity
-                    ImageBrush cardCoverOpacity = new ImageBrush();
-                    cardCoverOpacity.Stretch = Stretch.UniformToFill;
-                    cardCoverOpacity.ImageSource = ep_imgs;
-                    cardCoverOpacity.Opacity = 1;
-
-                    //Modify Popular Card Style
-                    epCard.Background = cardCover;
-                    epCard.Height = 175;
-                    epCard.Width = 300;
-                    epCard.MouseOverBackground = cardCoverOpacity;
-                    epCard.ToolTip = data.episodes[i].description;
-                    epCard.Tag = new
-                    {
-                        panel = epCardPanel,
-                        episode_id = data.episodes[i].id,
-                        ep_num = i.ToString()
-                    };
-
-                    var recent_title = data.episodes[i].title;
-                    var recent_episodeNum = data.episodes[i].number;
-                    //var recent_subordub = recent_array_subordub[i].ToString().ToUpper();
-
-                    epBadge.FontSize = 10;
-                    epBadge.FontWeight = FontWeights.Medium;
-                    epBadge.Background = Brushes.LimeGreen;
-                    epBadge.VerticalAlignment = VerticalAlignment.Top;
-                    epBadge.HorizontalAlignment = HorizontalAlignment.Center;
-                    epBadge.Content = "EP " + recent_episodeNum;
-
-                    epText.FontSize = 16;
-                    epText.FontWeight = FontWeights.Bold;
-                    epText.TextAlignment = TextAlignment.Center;
-                    epText.TextWrapping = TextWrapping.Wrap;
-                    epText.Text = recent_title;
-
-                    epCardPanel.Name = "epCardPanel";
-                    epCardPanel.Children.Add(epText);
-                    epCardPanel.Children.Add(epBadge);
-
-                    epCard.Content = epCardPanel;
-                    epCardPanel.Visibility = Visibility.Visible;
-
-                    epCard.Margin = new System.Windows.Thickness(15, 7.5, 0, 7.5);
-
-                    //Render and Add the control for the episodes
-                    dummy.Children.Add(epCard); 
-                    epCard.Click += new RoutedEventHandler(EPCard_Click);
-                    epCard.MouseEnter += new MouseEventHandler(epCard_MouseEnter);
-                    epCard.MouseLeave += new MouseEventHandler(epCard_MouseLeave);
-                    lastEPCount++;
-
+                    ((Wpf.Ui.Controls.Button)btn).Background = cardCover;
+                    ((Wpf.Ui.Controls.Button)btn).MouseOverBackground = cardCoverOpacity;
                 }
-
-                ViewMoreEPControl.Visibility = Visibility.Visible;
-                ViewMoreLoadControl.Visibility = Visibility.Collapsed;
-
-                List<UIElement> elementslast = new List<UIElement>();
-                List<UIElement> elementsdummy = new List<UIElement>();
-                foreach (UIElement yow in lastChild)
-                {
-                    elementslast.Add(yow);
-                }
-
-                var dummyChild = dummy.Children;
-                foreach (UIElement yow in dummyChild)
-                {
-                    elementsdummy.Add(yow);
-                }
-
-                elementsdummy.ForEach(item => elementslast.Add(item));
-                List<UIElement> result = new List<UIElement>();
-                result.AddRange(elementslast);
-                EpisodesListPanel.Children.Clear();
-
-                
-
-
-                foreach (UIElement childs in result)
-                {
-
-                    var parent = VisualTreeHelper.GetParent(childs);
-                    var parentAsPanel = parent as Panel;
-                    if (parentAsPanel != null)
-                    {
-                        parentAsPanel.Children.Remove(childs);
-                    }
-                    var parentAsContentControl = parent as ContentControl;
-                    if (parentAsContentControl != null)
-                    {
-                        parentAsContentControl.Content = null;
-                    }
-                    var parentAsDecorator = parent as Decorator;
-                    if (parentAsDecorator != null)
-                    {
-                        parentAsDecorator.Child = null;
-                    }
-
-                    EpisodesListPanel.Children.Add(childs);
-                }
-
-
-
+                i++;
             }
-            else if (isViewmore == true && sumPositive <= 99)
+        }
+
+        public void fillEpCombobox(anilist_Info info)
+        {
+            if (info.episodes.Length > 50)
             {
-                var lastChild = EpisodesListPanel.Children;
-                WrapPanel dummy = new WrapPanel();
-                int limiter = data.episodes.Length;
+                is50plus = true;
+                EpComboBox.Visibility = Visibility.Visible;
 
-                //System.Windows.MessageBox.Show("2 | "+ lastEPCount.ToString());
+                List<int> batchContent = new List<int>();
 
-                for (int i = lastEPCount; i < limiter; i++)
+                var batch = BatchInteger(info.episodes.Length, 50);
+                int ep = 0;
+                foreach (int value in batch)
                 {
-                    var epCardPanel = new System.Windows.Controls.StackPanel();
-                    var epText = new System.Windows.Controls.TextBlock();
-                    var epBadge = new Wpf.Ui.Controls.Badge();
-                    var epCard = new Wpf.Ui.Controls.Button();
+                    ep++;
+                    batchContent.Add(value);
+                }
 
-                    //Declare and initialize image to bitmap
-                    await ep_image_urlValidation(data.episodes[i].image);
-                    /*
-                    var httpClint = new HttpClient();
-                    var imageBytes = await httpClint.GetStreamAsync(data.episodes[i].image);
+                int[] batchContentArray = batchContent.ToArray();
 
-                    var bitmapImage = new BitmapImage();
-                    bitmapImage.BeginInit();
-                    bitmapImage.StreamSource = imageBytes;
-                    bitmapImage.EndInit();
-                    */
+                cboEpContent = new string[batchContentArray.Length];
+                cboEpValue = new int[batchContentArray.Length];
 
-                    //Cover Artwork without Opacity
-                    ImageBrush cardCover = new ImageBrush();
-                    cardCover.Stretch = Stretch.UniformToFill;
-                    cardCover.Opacity = 0.20;
-                    cardCover.ImageSource = ep_imgs;
-
-
-                    //Cover Artwork with Opacity
-                    ImageBrush cardCoverOpacity = new ImageBrush();
-                    cardCoverOpacity.Stretch = Stretch.UniformToFill;
-                    cardCoverOpacity.ImageSource = ep_imgs;
-                    cardCoverOpacity.Opacity = 1;
-
-                    //Modify Popular Card Style
-                    epCard.Background = cardCover;
-                    epCard.Height = 175;
-                    epCard.Width = 300;
-                    epCard.MouseOverBackground = cardCoverOpacity;
-                    epCard.ToolTip = data.episodes[i].description;
-                    epCard.Tag = new
+                int epStart = 1;
+                int epEnd = 0;
+                for (int i = 0; i < batchContentArray.Length; i++)
+                {
+                    if (i == 0)
                     {
-                        panel = epCardPanel,
-                        episode_id = data.episodes[i].id,
-                        ep_num = i.ToString()
-                    };
-
-                    var recent_title = data.episodes[i].title;
-                    var recent_episodeNum = data.episodes[i].number;
-                    //var recent_subordub = recent_array_subordub[i].ToString().ToUpper();
-
-                    epBadge.FontSize = 10;
-                    epBadge.FontWeight = FontWeights.Medium;
-                    epBadge.Background = Brushes.LimeGreen;
-                    epBadge.VerticalAlignment = VerticalAlignment.Top;
-                    epBadge.HorizontalAlignment = HorizontalAlignment.Center;
-                    epBadge.Content = "EP " + recent_episodeNum;
-
-                    epText.FontSize = 16;
-                    epText.FontWeight = FontWeights.Bold;
-                    epText.TextAlignment = TextAlignment.Center;
-                    epText.TextWrapping = TextWrapping.Wrap;
-                    epText.Text = recent_title;
-
-                    epCardPanel.Name = "epCardPanel";
-                    epCardPanel.Children.Add(epText);
-                    epCardPanel.Children.Add(epBadge);
-
-                    epCard.Content = epCardPanel;
-                    epCardPanel.Visibility = Visibility.Visible;
-
-                    epCard.Margin = new System.Windows.Thickness(15, 7.5, 0, 7.5);
-
-                    //Render and Add the control for the episodes
-                    dummy.Children.Add(epCard);
-                    epCard.Click += new RoutedEventHandler(EPCard_Click);
-                    epCard.MouseEnter += new MouseEventHandler(epCard_MouseEnter);
-                    epCard.MouseLeave += new MouseEventHandler(epCard_MouseLeave);
-                    lastEPCount++;
-
-                }
-
-                ViewMoreEPControl.Visibility = Visibility.Collapsed;
-                ViewMoreLoadControl.Visibility = Visibility.Collapsed;
-
-                List<UIElement> elementslast = new List<UIElement>();
-                List<UIElement> elementsdummy = new List<UIElement>();
-                foreach (UIElement yow in lastChild)
-                {
-                    elementslast.Add(yow);
-                }
-
-                var dummyChild = dummy.Children;
-                foreach (UIElement yow in dummyChild)
-                {
-                    elementsdummy.Add(yow);
-                }
-
-                elementsdummy.ForEach(item => elementslast.Add(item));
-                List<UIElement> result = new List<UIElement>();
-                result.AddRange(elementslast);
-                EpisodesListPanel.Children.Clear();
-
-
-
-                //Disconnect element then add new elements
-                foreach (UIElement childs in result)
-                {
-
-                    var parent = VisualTreeHelper.GetParent(childs);
-                    var parentAsPanel = parent as Panel;
-                    if (parentAsPanel != null)
-                    {
-                        parentAsPanel.Children.Remove(childs);
+                        cboEpContent[i] = epStart + " - " + batchContentArray[i].ToString();
+                        epEnd += batchContentArray[i];
                     }
-                    var parentAsContentControl = parent as ContentControl;
-                    if (parentAsContentControl != null)
+                    else
                     {
-                        parentAsContentControl.Content = null;
+                        epStart = epEnd + 1;
+                        epEnd += batchContentArray[i];
+                        cboEpContent[i] = epStart + " - " + epEnd;
                     }
-                    var parentAsDecorator = parent as Decorator;
-                    if (parentAsDecorator != null)
-                    {
-                        parentAsDecorator.Child = null;
-                    }
-
-                    EpisodesListPanel.Children.Add(childs);
+                    //System.Windows.MessageBox.Show(epEnd + " + " + batchContentArray[i]);
                 }
+
+                EpComboBox.ItemsSource = cboEpContent;
+                EpComboBox.SelectedIndex = 0;
+
             }
             else
             {
-                ViewMoreEPPanel.Visibility = Visibility.Collapsed;
+                is50plus = false;
+                EpComboBox.Visibility = Visibility.Hidden;
+                GenerateEpisodesCard(selectedanime);
+            }
+        }
 
-                for (int i = 0; i < data.episodes.Length; i++)
+        private static IEnumerable<int> BatchInteger(int total, int batchSize)
+        {
+            if (batchSize == 0)
+            {
+                yield return 0;
+            }
+
+            if (batchSize >= total)
+            {
+                yield return total;
+            }
+            else
+            {
+                int rest = total % batchSize;
+                int divided = total / batchSize;
+                if (rest > 0)
                 {
-                    var epCardPanel = new System.Windows.Controls.StackPanel();
-                    var epText = new System.Windows.Controls.TextBlock();
-                    var epBadge = new Wpf.Ui.Controls.Badge();
-                    var epCard = new Wpf.Ui.Controls.Button();
+                    divided += 1;
+                }
 
-                    //Declare and initialize image to bitmap
-                    await ep_image_urlValidation(data.episodes[i].image);
-                    /*
-                    var httpClint = new HttpClient();
-                    var imageBytes = await httpClint.GetStreamAsync(data.episodes[i].image);
-
-                    var bitmapImage = new BitmapImage();
-                    bitmapImage.BeginInit();
-                    bitmapImage.StreamSource = imageBytes;
-                    bitmapImage.EndInit();
-                    */
-
-                    //Cover Artwork without Opacity
-                    ImageBrush cardCover = new ImageBrush();
-                    cardCover.Stretch = Stretch.UniformToFill;
-                    cardCover.Opacity = 0.20;
-                    cardCover.ImageSource = ep_imgs;
-
-
-                    //Cover Artwork with Opacity
-                    ImageBrush cardCoverOpacity = new ImageBrush();
-                    cardCoverOpacity.Stretch = Stretch.UniformToFill;
-                    cardCoverOpacity.ImageSource = ep_imgs;
-                    cardCoverOpacity.Opacity = 1;
-
-                    //Modify Popular Card Style
-                    epCard.Background = cardCover;
-                    epCard.Height = 175;
-                    epCard.Width = 300;
-                    epCard.MouseOverBackground = cardCoverOpacity;
-                    epCard.ToolTip = data.episodes[i].description;
-                    epCard.Tag = new
+                for (int i = 0; i < divided; i++)
+                {
+                    if (rest > 0 && i == divided - 1)
                     {
-                        panel = epCardPanel,
-                        episode_id = data.episodes[i].id,
-                        ep_num = i.ToString()
-                    };
-
-                    var recent_title = data.episodes[i].title;
-                    var recent_episodeNum = data.episodes[i].number;
-                    //var recent_subordub = recent_array_subordub[i].ToString().ToUpper();
-
-                    epBadge.FontSize = 10;
-                    epBadge.FontWeight = FontWeights.Medium;
-                    epBadge.Background = Brushes.LimeGreen;
-                    epBadge.VerticalAlignment = VerticalAlignment.Top;
-                    epBadge.HorizontalAlignment = HorizontalAlignment.Center;
-                    epBadge.Content = "EP " + recent_episodeNum;
-
-                    epText.FontSize = 16;
-                    epText.FontWeight = FontWeights.Bold;
-                    epText.TextAlignment = TextAlignment.Center;
-                    epText.TextWrapping = TextWrapping.Wrap;
-                    epText.Text = recent_title;
-
-                    epCardPanel.Name = "epCardPanel";
-                    epCardPanel.Children.Add(epText);
-                    epCardPanel.Children.Add(epBadge);
-
-                    epCard.Content = epCardPanel;
-                    epCardPanel.Visibility = Visibility.Visible;
-
-                    epCard.Margin = new System.Windows.Thickness(15, 7.5, 0, 7.5);
-
-                    //Render and Add the control for the episodes
-                    EpisodesListPanel.Children.Add(epCard); 
-                    epCard.Click += new RoutedEventHandler(EPCard_Click);
-                    epCard.MouseEnter += new MouseEventHandler(epCard_MouseEnter);
-                    epCard.MouseLeave += new MouseEventHandler(epCard_MouseLeave);
-
-
+                        yield return rest;
+                    }
+                    else
+                    {
+                        yield return batchSize;
+                    }
                 }
             }
-            
         }
+
         private void EPCard_Click(object sender, RoutedEventArgs e)
         {
             Wpf.Ui.Controls.Button buttonThatWasClicked = (Wpf.Ui.Controls.Button)sender;
@@ -1168,7 +1047,7 @@ namespace OzakiAnimeWPF.Pages
             string id = ((dynamic)buttonThatWasClicked.Tag).id;
             string cover = ((dynamic)buttonThatWasClicked.Tag).cover;
 
-            this.NavigationService.Navigate(new SelectedAnime(id, cover));
+            this.NavigationService.Navigate(new SelectedAnime(id));
 
         }
 
@@ -1201,11 +1080,18 @@ namespace OzakiAnimeWPF.Pages
             return str;
         }
 
-        public async void animeCoverBitImage(string coverLink)
+        public async Task animeCoverBitImage(string coverLink)
         {
             //Declare and initialize image to bitmap
-            await ep_image_urlValidation(coverLink);
-            AnimeCover.ImageSource = ep_imgs;
+            await coverIMG_urlValidation(coverLink);
+            AnimeCover.ImageSource = cover_img;
+        }
+
+        public async Task animeImgBitImage(string coverLink)
+        {
+            //Declare and initialize image to bitmap
+            await animeIMG_urlValidation(coverLink);
+            animeImg.ImageSource = anime_img;
         }
 
         public void releaseDate(string year, string month, string day)
@@ -1421,12 +1307,111 @@ namespace OzakiAnimeWPF.Pages
 
         }
 
-        public async Task ep_image_urlValidation(string url)
+        public async Task animeIMG_urlValidation(string url)
         {
             HttpClient client = new HttpClient();
             HttpResponseMessage response = new HttpResponseMessage();
 
-            response = await client.GetAsync(url);
+            response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+
+            if (response.IsSuccessStatusCode)
+            {
+                try
+                {
+                    var getResponsestring = await response.Content.ReadAsStreamAsync();
+                    //System.Windows.MessageBox.Show("Success Trending IMG");
+                    var bitmapImage = new BitmapImage();
+                    bitmapImage.BeginInit();
+                    bitmapImage.StreamSource = getResponsestring;
+                    bitmapImage.EndInit();
+                    anime_img = bitmapImage;
+                }
+                catch (Exception ex)
+                {
+                    string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                    string imageRelativePath = "Images\\Background\\Noimage.png";
+                    string imagePath = System.IO.Path.Combine(baseDirectory, imageRelativePath);
+
+                    var bitmap = new System.Drawing.Bitmap(imagePath);
+                    anime_img = ToBitmapImage(bitmap);
+                }
+            }
+            else
+            {
+                string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                string imageRelativePath = "Images\\Background\\Noimage.png";
+                string imagePath = System.IO.Path.Combine(baseDirectory, imageRelativePath);
+
+                var bitmap = new System.Drawing.Bitmap(imagePath);
+                anime_img = ToBitmapImage(bitmap);
+
+                //img_card = ToBitmapImage(bitmap);
+
+                //var tet = new ImageBrush(new BitmapImage(new Uri(@"C:\Users\Krystler\source\repos\OzakiAnimeWPF\OzakiAnimeWPF\Images\Background\Noimage.png", UriKind.Relative)));
+                //img_card = new BitmapImage(new Uri("pack://application:,,,/Images/Background/Noimage.png"));
+                //System.Windows.MessageBox.Show("here");
+            }
+
+
+        }
+
+        public async Task coverIMG_urlValidation(string url)
+        {
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = new HttpResponseMessage();
+
+            response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+
+            if (response.IsSuccessStatusCode)
+            {
+                try
+                {
+                    var getResponsestring = await response.Content.ReadAsStreamAsync();
+                    //System.Windows.MessageBox.Show("Success Trending IMG");
+                    var bitmapImage = new BitmapImage();
+                    bitmapImage.BeginInit();
+                    bitmapImage.StreamSource = getResponsestring;
+                    bitmapImage.EndInit();
+                    cover_img = bitmapImage;
+                }
+                catch (Exception ex)
+                {
+                    string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                    string imageRelativePath = "Images\\Background\\Noimage.png";
+                    string imagePath = System.IO.Path.Combine(baseDirectory, imageRelativePath);
+
+                    var bitmap = new System.Drawing.Bitmap(imagePath);
+                    cover_img = ToBitmapImage(bitmap);
+                }
+            }
+            else
+            {
+                string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                string imageRelativePath = "Images\\Background\\Noimage.png";
+                string imagePath = System.IO.Path.Combine(baseDirectory, imageRelativePath);
+
+                var bitmap = new System.Drawing.Bitmap(imagePath);
+                cover_img = ToBitmapImage(bitmap);
+
+                //img_card = ToBitmapImage(bitmap);
+
+                //var tet = new ImageBrush(new BitmapImage(new Uri(@"C:\Users\Krystler\source\repos\OzakiAnimeWPF\OzakiAnimeWPF\Images\Background\Noimage.png", UriKind.Relative)));
+                //img_card = new BitmapImage(new Uri("pack://application:,,,/Images/Background/Noimage.png"));
+                //System.Windows.MessageBox.Show("here");
+            }
+
+
+        }
+
+        public async Task ep_image_urlValidation(string url)
+        {
+            HttpClientHandler clientHandler = new HttpClientHandler();
+            clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+            HttpClient client = new HttpClient(clientHandler);
+            HttpResponseMessage response = new HttpResponseMessage();
+
+            response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
 
             if (response.IsSuccessStatusCode)
             {
@@ -1471,7 +1456,10 @@ namespace OzakiAnimeWPF.Pages
 
         public async Task rl_image_urlValidation(string url)
         {
-            HttpClient client = new HttpClient();
+            HttpClientHandler clientHandler = new HttpClientHandler();
+            clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+            HttpClient client = new HttpClient(clientHandler);
             HttpResponseMessage response = new HttpResponseMessage();
 
             response = await client.GetAsync(url);
@@ -1518,7 +1506,10 @@ namespace OzakiAnimeWPF.Pages
         }
         public async Task reco_image_urlValidation(string url)
         {
-            HttpClient client = new HttpClient();
+            HttpClientHandler clientHandler = new HttpClientHandler();
+            clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+            HttpClient client = new HttpClient(clientHandler);
             HttpResponseMessage response = new HttpResponseMessage();
 
             response = await client.GetAsync(url);
@@ -1552,7 +1543,7 @@ namespace OzakiAnimeWPF.Pages
                 string imagePath = System.IO.Path.Combine(baseDirectory, imageRelativePath);
 
                 var bitmap = new System.Drawing.Bitmap(imagePath);
-                rl_imgs = ToBitmapImage(bitmap);
+                reco_imgs = ToBitmapImage(bitmap);
 
                 //img_card = ToBitmapImage(bitmap);
 
@@ -1677,12 +1668,54 @@ namespace OzakiAnimeWPF.Pages
             }
         }
 
-        private void ViewMoreEPControl_Click(object sender, RoutedEventArgs e)
+        private void EpComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            isViewMore = true;
-            ViewMoreEPControl.Visibility = Visibility.Collapsed;
-            ViewMoreLoadControl.Visibility = Visibility.Visible;
-            GenerateEpisodesCard(selectedanime, isViewMore);
+            GenerateEpisodesCard(selectedanime);
+        }
+
+        private void txtSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                this.NavigationService.Navigate(new AdvancedSearch(txtSearch.Text));
+            }
+        }
+
+        public void FavoriteButton_Status()
+        {
+            if (isFavorite == true)
+            {
+                favSymbol.Filled = true;
+                favText.Text = "Favorite";
+            }
+            else
+            {
+                favSymbol.Filled = false;
+                favText.Text = "Add to Favorites";
+            }
+        }
+
+        private void FavoriteButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+
+            if (isFavorite == false)
+            {
+                isFavorite = true;
+                favSymbol.Filled = true;
+                favText.Text = "Favorite";
+
+                AccountFavorites.Anime_Anilist_AddFavorite(selectedanime.id, selectedanime.title.romaji, selectedanime.countryOfOrigin, selectedanime.image,
+                    selectedanime.releaseDate, selectedanime.type, selectedanime.subOrDub);
+            }
+            else
+            {
+                isFavorite = false;
+                favSymbol.Filled = false;
+                favText.Text = "Add to Favorites";
+
+                AccountFavorites.Anime_Anilist_RemoveFavorite(selectedanime.id);
+            }
         }
     }
 }

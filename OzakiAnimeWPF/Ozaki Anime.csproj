@@ -9,9 +9,11 @@
     <ApplicationIcon>Images\Logo\180 px.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Title>Ozaki Anime</Title>
-    <AssemblyVersion>0.5.1</AssemblyVersion>
-    <FileVersion>0.5.1</FileVersion>
+    <AssemblyVersion>0.6</AssemblyVersion>
+    <FileVersion>0.6</FileVersion>
     <PackageProjectUrl>https://github.com/Ozakinn/OzakiAnimeWPF</PackageProjectUrl>
+    <PackageId>$(AssemblyName)</PackageId>
+    <SignAssembly>False</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,13 +34,15 @@
     <None Remove="Files\PlayEP2\player\index.html" />
     <None Remove="Files\PlayEP2\player\js\hls.js" />
     <None Remove="Files\PlayEP2\player\js\jquery-3.2.1.min.js" />
-    <None Remove="Files\PlayEP2\player\mousetrap.min.js" />
+    <None Remove="Files\PlayEP2\player\js\plyr.js" />
     <None Remove="Files\PlayEP2\player\player.js" />
+    <None Remove="Files\PlayEP2\player\plyr.css" />
     <None Remove="Images\Background\grey.png" />
     <None Remove="Images\Background\SampleAnimeImg.png" />
     <None Remove="Images\Background\sampleHD.jpg" />
     <None Remove="Images\Background\SampleHD1.jpg" />
     <None Remove="Images\Background\SampleHD2.jpg" />
+    <None Remove="Images\Background\SampleHD3.jpg" />
     <None Remove="Images\Logo\Ozaki-180.png" />
     <None Remove="Images\Samples\one-piece-cover.jpg" />
     <None Remove="Images\Samples\one-piece.jpg" />
@@ -89,10 +93,13 @@
     <Content Include="Files\PlayEP2\player\js\jquery-3.2.1.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Files\PlayEP2\player\mousetrap.min.js">
+    <Content Include="Files\PlayEP2\player\js\plyr.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Files\PlayEP2\player\player.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\PlayEP2\player\plyr.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\Background\grey.png">
@@ -127,6 +134,9 @@
     <Resource Include="Images\Background\SampleHD2.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Images\Background\SampleHD3.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Images\Logo\Ozaki-180.png" />
     <Content Include="Images\Samples\one-piece-cover.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -144,8 +154,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Anime\GOGOANIME\" />
-    <Folder Include="Pages\OzakiHome\" />
+    <Folder Include="Pages\Manga\" />
   </ItemGroup>
 
   <ItemGroup>

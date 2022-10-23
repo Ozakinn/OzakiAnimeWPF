@@ -1,0 +1,185 @@
+﻿<ui:UiPage x:Class="OzakiAnimeWPF.Pages.OzakiHome.OzakiHomePage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:OzakiAnimeWPF.Pages.OzakiHome"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        mc:Ignorable="d" 
+        Scrollable="True"
+        d:DesignHeight="900" d:DesignWidth="975"
+        Title="OzakiHomePage">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="600" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="250" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border
+            x:Name="HomeBorder"
+            Grid.Row="0"
+            Height="600"
+            CornerRadius="8,0,0,0"
+            Visibility="Visible">
+                <Border.OpacityMask>
+                    <LinearGradientBrush
+                    StartPoint="0,1"
+                    EndPoint="0,0">
+                        <GradientStop Offset=".3" Color="Red"></GradientStop>
+                        <GradientStop Offset="0.02" Color="Transparent"></GradientStop>
+
+                    </LinearGradientBrush>
+                </Border.OpacityMask>
+
+                <Border CornerRadius="8,0,0,0">
+                    <Border.Background>
+                        <RadialGradientBrush>
+                            <GradientStop Offset="0" Color="#1F000000" />
+                            <GradientStop Offset="1" Color="#4F000000" />
+                        </RadialGradientBrush>
+                    </Border.Background>
+                    <Grid>
+                        <StackPanel
+                        x:Name="PanelCover">
+                            <StackPanel.Background>
+                                <ImageBrush
+                            x:Name="HomeCover"
+                            ImageSource="/Images/Background/SampleHD3.jpg"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Stretch="UniformToFill" >
+                                </ImageBrush>
+                            </StackPanel.Background>
+                        </StackPanel>
+                        <WrapPanel
+                            Margin="64,84,64,64"
+                            Background="Transparent" 
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center">
+
+                            <Image 
+                            Width="auto" 
+                            Height="125" 
+                            Source="/Images/Logo/Ozaki-180.png" Stretch="Uniform" />
+
+                            <StackPanel
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+
+                                <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="52"
+                                FontWeight="Bold"
+                                Foreground="#FFFFFF"
+                                Text="Ozaki Anime" />
+
+                                <TextBlock
+                            FontSize="24"
+                            Foreground="#B7FFFFFF"
+                            Text="Watch everything on your desktop. It's completely free." />
+
+
+                            </StackPanel>
+
+
+
+                        </WrapPanel>
+                    </Grid>
+                </Border>
+            </Border>
+
+            <!--Start of feature Card List-->
+            <Grid Grid.Row="1" Margin="0,-200,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition x:Name="gridRow0" Height="auto" />
+                    <RowDefinition x:Name="gridRow1" Height="auto" />
+                    <RowDefinition x:Name="gridRow2" Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+
+                <!--Features Button-->
+                <WrapPanel 
+                    Grid.Row="1"
+                    HorizontalAlignment="Center">
+
+                    <ui:Button  
+                        Width="250"
+                        Height="225"
+                        Padding="40"
+                        Margin="10">
+                        <StackPanel>
+
+                            <ui:SymbolIcon 
+                                Symbol="DismissSquareMultiple20" 
+                                FontSize="100"></ui:SymbolIcon>
+                            <TextBlock 
+                                Foreground="White"
+                                FontSize="26"
+                                TextAlignment="Center"
+                                FontWeight="Medium"
+                                Text="  No Ads  "></TextBlock>
+                        </StackPanel>
+                    </ui:Button>
+
+                    <ui:Button  
+                        Width="250"
+                        Height="225"
+                        Padding="40"
+                        Margin="10">
+                        <StackPanel>
+
+                            <ui:SymbolIcon 
+                                Symbol="MoviesAndTv24" 
+                                FontSize="100"></ui:SymbolIcon>
+                            <TextBlock 
+                                Foreground="White"
+                                FontSize="26"
+                                TextAlignment="Center"
+                                FontWeight="Medium"
+                                Text="  Watch Free  "></TextBlock>
+                        </StackPanel>
+                    </ui:Button>
+
+                    <ui:Button 
+                        x:Name="StarRepo"
+                        Width="250"
+                        Height="225"
+                        Padding="40"
+                        Margin="10" Click="StarRepo_Click">
+                        <StackPanel>
+
+                            <ui:SymbolIcon 
+                                Symbol="Star24" 
+                                FontSize="100"></ui:SymbolIcon>
+                            <TextBlock 
+                                Foreground="White"
+                                FontSize="26"
+                                TextAlignment="Center"
+                                FontWeight="Medium"
+                                Text="Star this Repo!"></TextBlock>
+                        </StackPanel>
+                    </ui:Button>
+
+
+                </WrapPanel>
+
+
+
+            </Grid>
+        </Grid>
+    </Grid>
+</ui:UiPage>

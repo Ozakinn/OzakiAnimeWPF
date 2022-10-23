@@ -1,4 +1,6 @@
 ﻿using OzakiAnimeWPF.Pages;
+using OzakiAnimeWPF.Pages.OzakiHome;
+using OzakiAnimeWPF.Pages.UserAccount;
 using Squirrel;
 using Squirrel.Sources;
 using System;
@@ -37,36 +39,66 @@ namespace OzakiAnimeWPF
             CheckforUpdates();
 
             SettingsFile.DefaultDevSettingSave(false);
-
+            AccountFavorites.AccountSave(false);
             //SplashScreen();
+
+            SquirrelAwareApp.HandleEvents(
+           onInitialInstall: OnAppInstall,
+           onAppUninstall: OnAppUninstall);
+
+        }
+
+        private static void OnAppInstall(SemanticVersion version, IAppTools tools)
+        {
+            tools.CreateShortcutForThisExe(ShortcutLocation.StartMenu | ShortcutLocation.Desktop);
+        }
+
+        private static void OnAppUninstall(SemanticVersion version, IAppTools tools)
+        {
+            tools.RemoveShortcutForThisExe(ShortcutLocation.StartMenu | ShortcutLocation.Desktop);
         }
 
         private async Task CheckforUpdates()
         {
+            //System.Windows.MessageBox.Show("here");
             using (var mgr = new GithubUpdateManager(@"https://github.com/Ozakinn/OzakiAnimeWPF"))
             {
-
                 var newVersion = await mgr.UpdateApp();
                 // optionally restart the app automatically, or ask the user if/when they want to restart
                 if (newVersion != null)
                 {
-                    UpdateManager.RestartApp();
+                    RootDialog.Title = "New Update Found!";
+                    dialogContent.Text = "Do you want to update now?";
+                    RootDialog.ButtonLeftName = "Ok";
+                    RootDialog.ButtonRightName = "Later";
+                    RootDialog.Show();
+                    RootDialog.ButtonLeftClick += RootDialog_ButtonLeftClick;
+                    RootDialog.ButtonRightClick += RootDialog_ButtonRightClick;
                 }
             }
 
             
         }
 
+        private void RootDialog_ButtonRightClick(object sender, RoutedEventArgs e)
+        {
+            RootDialog.Hide();
+        }
+
+        private void RootDialog_ButtonLeftClick(object sender, RoutedEventArgs e)
+        {
+            UpdateManager.RestartApp();
+        }
+
         private async void UiWindow_Loaded(object sender, RoutedEventArgs e)
         {
-
             SplashUI.Visibility = Visibility.Visible;
             MainGrid.Visibility = Visibility.Hidden;
 
 
-            RootFrame.Navigate(new Home(this));
+            RootFrame.Navigate(new OzakiHomePage());
             resetNavSelection();
-            navHome.IsActive = true;
+            //navHome.IsActive = true;
 
             await Task.Delay(2000);
             SplashUI.Visibility = Visibility.Hidden;
@@ -112,22 +144,28 @@ namespace OzakiAnimeWPF
 
         private void navHome_Click(object sender, RoutedEventArgs e)
         {
+            RootFrame.Navigate(new OzakiHomePage());
+            resetNavSelection();
+            //navHome.IsActive = true;
+        }
+        private void navAnime_Click(object sender, RoutedEventArgs e)
+        {
             RootFrame.Navigate(new Home(this));
             resetNavSelection();
-            navHome.IsActive = true;
         }
 
         private void NavigationItem_Click(object sender, RoutedEventArgs e)
         {
             RootFrame.Navigate(new Settings(this));
             resetNavSelection();
-            navSettings.IsActive = true;
+            //navSettings.IsActive = true;
         }
 
         private void Account_Click(object sender, RoutedEventArgs e)
         {
-            //RootFrame.Navigate(new SelectedAnime());
-            //resetNavSelection();
+            UserAccount userpage = new UserAccount();
+            RootFrame.Navigate(userpage);
+            resetNavSelection();
             //Account.IsActive = true;
         }
 
@@ -210,7 +248,6 @@ namespace OzakiAnimeWPF
         {
             RootFrame.GoBack();
         }
-
         //Reference for Future
         // About Invoke and Async : https://stackoverflow.com/questions/9732709/the-calling-thread-cannot-access-this-object-because-a-different-thread-owns-it
     }

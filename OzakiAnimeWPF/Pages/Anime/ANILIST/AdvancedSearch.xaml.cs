@@ -49,6 +49,9 @@ namespace Pages
         string FormatPARAM;
         string AiringStatusPARAM;
 
+        //task for images
+        List<string> img_Content = new List<string>();
+
         BitmapImage card_imgs;
         //avoid duplicate of page load
         private bool _isLoaded;
@@ -184,6 +187,7 @@ namespace Pages
 
         public async Task generateResult(AnilistAdvancedSearch query)
         {
+            img_Content.Clear();
             WrapPanel dummy = new WrapPanel();
             for (int i = 0; i < query.results.Length; i++)
             {
@@ -193,35 +197,26 @@ namespace Pages
                 var result_Card = new Wpf.Ui.Controls.Button();
 
                 //Declare and initialize image to bitmap
-                await card_image_urlValidation(query.results[i].image);
-                /*
-                var httpClint = new HttpClient();
-                var imageBytes = await httpClint.GetStreamAsync(data.episodes[i].image);
 
-                var bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = imageBytes;
-                bitmapImage.EndInit();
-                */
+                img_Content.Add(query.results[i].image);
 
-                //Cover Artwork without Opacity
-                ImageBrush cardCover = new ImageBrush();
-                cardCover.Stretch = Stretch.UniformToFill;
-                cardCover.Opacity = 0.20;
-                cardCover.ImageSource = card_imgs;
+                object btn = this.FindName("resultCard_" + i);
 
-
-                //Cover Artwork with Opacity
-                ImageBrush cardCoverOpacity = new ImageBrush();
-                cardCoverOpacity.Stretch = Stretch.UniformToFill;
-                cardCoverOpacity.ImageSource = card_imgs;
-                cardCoverOpacity.Opacity = 1;
+                if (btn is not null)
+                {
+                    if (((Wpf.Ui.Controls.Button)btn).Name == "resultCard_" + i)
+                    {
+                        UnregisterName("resultCard_" + i);
+                    }
+                }
 
                 //Modify Result Card Style
-                result_Card.Background = cardCover;
+                result_Card.Name = "resultCard_" + i;
+                RegisterName("resultCard_" + i, result_Card);
+                //result_Card.Background = cardCover;
                 result_Card.Height = 240;
                 result_Card.Width = 165;
-                result_Card.MouseOverBackground = cardCoverOpacity;
+                //result_Card.MouseOverBackground = cardCoverOpacity;
                 result_Card.ToolTip = query.results[i].status;
                 result_Card.Tag = new
                 {
@@ -297,15 +292,47 @@ namespace Pages
             }
 
             ResultPanel.Visibility = Visibility.Visible;
+            generateIMG(1);
 
         }
+        public async Task generateIMG(int startEP)
+        {
+            int i = startEP - 1;
+            foreach (string url in img_Content)
+            {
+                await card_image_urlValidation(url);
+
+                //Cover Artwork without Opacity
+                ImageBrush cardCover = new ImageBrush();
+                cardCover.Stretch = Stretch.UniformToFill;
+                cardCover.Opacity = 0.20;
+                cardCover.ImageSource = card_imgs;
+
+
+                //Cover Artwork with Opacity
+                ImageBrush cardCoverOpacity = new ImageBrush();
+                cardCoverOpacity.Stretch = Stretch.UniformToFill;
+                cardCoverOpacity.ImageSource = card_imgs;
+                cardCoverOpacity.Opacity = 1;
+
+                object btn = this.FindName("resultCard_" + i);
+
+                if (btn.GetType() == typeof(Wpf.Ui.Controls.Button))
+                {
+                    ((Wpf.Ui.Controls.Button)btn).Background = cardCover;
+                    ((Wpf.Ui.Controls.Button)btn).MouseOverBackground = cardCoverOpacity;
+                }
+                i++;
+            }
+        }
+
         private void result_Card_Click(object sender, RoutedEventArgs e)
         {
             Wpf.Ui.Controls.Button buttonThatWasClicked = (Wpf.Ui.Controls.Button)sender;
             string id = ((dynamic)buttonThatWasClicked.Tag).id;
             string cover = ((dynamic)buttonThatWasClicked.Tag).cover;
 
-            this.NavigationService.Navigate(new SelectedAnime(id, cover));
+            this.NavigationService.Navigate(new SelectedAnime(id));
 
         }
 

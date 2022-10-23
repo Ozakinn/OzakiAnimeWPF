@@ -8,11 +8,12 @@
       Background="Black"
       mc:Ignorable="d"
       Scrollable="True"
-      d:DesignHeight="1000" d:DesignWidth="800"
+      d:DesignHeight="1100" d:DesignWidth="800"
       Title="SelectedAnime" Loaded="UiPage_Loaded">
     <Grid
         Background="#101010">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -22,19 +23,30 @@
             <ColumnDefinition Width="auto"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        
+
+
+        <!--SearchBar-->
+        <ui:TextBox
+            Grid.Row="0"
+            x:Name="txtSearch"
+            Margin="10,45,5,0"
+            Icon="Search24" 
+            PlaceholderText="Search your anime..." 
+            IconPlacement="Right"
+            KeyDown="txtSearch_KeyDown"></ui:TextBox>
+
         <!--ANIME DETAILS-->
         <Border
-            Grid.Row="0"
-            Grid.RowSpan="2"
+            Grid.Row="1"
             Grid.Column="0"
             Height="auto"
             CornerRadius="8"
-            Margin="10,45,5,10"
+            Margin="10,5,5,10"
             Background="#191919">
 
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
@@ -68,10 +80,46 @@
 
                 </Border>
 
+                <!--USER FAVORITE-->
+
+                <ui:Button
+                    x:Name="FavoriteButton"
+                    Grid.Row="1"
+                    Margin="0,0,0,5"
+                    HorizontalAlignment="Center" Click="FavoriteButton_Click">
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <ui:SymbolIcon 
+                            x:Name="favSymbol"
+                            Grid.Column="0"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Left"
+                            Symbol="Heart24"
+                            FontSize="16"
+                            Foreground="OrangeRed"/>
+
+                        <TextBlock
+                            x:Name="favText"
+                            Grid.Column="1"
+                            FontSize="14"
+                            Margin="2,-1,0,0"
+                            FontWeight="Medium"
+                            Foreground="OrangeRed"
+                            HorizontalAlignment="Left"
+                            TextWrapping="WrapWithOverflow" Text="Add to Favorites">
+                        </TextBlock>
+                    </Grid>
+                </ui:Button>
+
                 <!--ANIME AIRING-->
                 <StackPanel
                     x:Name="AiringPanel"
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Margin="20,5,10,5"
                     HorizontalAlignment="Left">
                     
@@ -96,7 +144,7 @@
                 <!--ANIME FORMAT-->
                 <StackPanel
                     x:Name="FormatPanel"
-                    Grid.Row="2"
+                    Grid.Row="3"
                     Margin="20,5,10,5"
                     HorizontalAlignment="Left">
 
@@ -121,7 +169,7 @@
                 <!--ANIME EPISODES-->
                 <StackPanel
                     x:Name="EpisodesPanel"
-                    Grid.Row="3"
+                    Grid.Row="4"
                     Margin="20,5,10,5"
                     HorizontalAlignment="Left">
 
@@ -146,7 +194,7 @@
                 <!--ANIME EPISODE DURATION-->
                 <StackPanel
                     x:Name="EpisodeDurationPanel"
-                    Grid.Row="4"
+                    Grid.Row="5"
                     Margin="20,5,10,5"
                     HorizontalAlignment="Left">
 
@@ -171,7 +219,7 @@
                 <!--ANIME STATUS-->
                 <StackPanel
                     x:Name="StatusPanel"
-                    Grid.Row="5"
+                    Grid.Row="6"
                     Margin="20,5,10,5"
                     HorizontalAlignment="Left">
 
@@ -196,7 +244,7 @@
                 <!--ANIME RELEASE DATE-->
                 <StackPanel
                     x:Name="ReleaseDatePanel"
-                    Grid.Row="6"
+                    Grid.Row="7"
                     Margin="20,5,10,5"
                     HorizontalAlignment="Left">
 
@@ -221,7 +269,7 @@
                 <!--ANIME END DATE-->
                 <StackPanel
                     x:Name="EndDatePanel"
-                    Grid.Row="7"
+                    Grid.Row="8"
                     Margin="20,5,10,5"
                     HorizontalAlignment="Left">
 
@@ -246,7 +294,7 @@
                 <!--ANIME SEASON-->
                 <StackPanel
                     x:Name="SeasonPanel"
-                    Grid.Row="8"
+                    Grid.Row="9"
                     Margin="20,5,10,5"
                     HorizontalAlignment="Left">
 
@@ -271,7 +319,7 @@
                 <!--ANIME AVERAGE SCORE-->
                 <StackPanel
                     x:Name="AvgScorePanel"
-                    Grid.Row="9"
+                    Grid.Row="10"
                     Margin="20,5,10,5"
                     HorizontalAlignment="Left">
 
@@ -296,7 +344,7 @@
                 <!--ANIME POPULARITY-->
                 <StackPanel
                     x:Name="PopularityPanel"
-                    Grid.Row="10"
+                    Grid.Row="11"
                     Margin="20,5,10,5"
                     HorizontalAlignment="Left">
 
@@ -321,7 +369,7 @@
                 <!--ANIME STUDIOS-->
                 <StackPanel
                     x:Name="StudiosPanel"
-                    Grid.Row="11"
+                    Grid.Row="12"
                     Margin="20,5,10,5"
                     HorizontalAlignment="Left">
 
@@ -346,7 +394,7 @@
                 <!--ANIME GENRES-->
                 <StackPanel
                     x:Name="GenresPanel"
-                    Grid.Row="12"
+                    Grid.Row="13"
                     Margin="20,5,10,5"
                     HorizontalAlignment="Left">
 
@@ -367,10 +415,35 @@
                         TextWrapping="WrapWithOverflow" Text="Action">
                     </TextBlock>
                 </StackPanel>
-                
+
+                <!--ANIME SUB/DUB-->
+                <StackPanel
+                    x:Name="SuborDubPanel"
+                    Grid.Row="14"
+                    Margin="20,5,10,5"
+                    HorizontalAlignment="Left">
+
+                    <TextBlock
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="#FFFFFF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Sub/Dub">
+                    </TextBlock>
+
+                    <TextBlock
+                        x:Name="SuborDubControl"
+                        FontSize="14"
+                        FontWeight="Medium"
+                        Foreground="#DFDFDF"
+                        HorizontalAlignment="Left"
+                        TextWrapping="WrapWithOverflow" Text="Sub">
+                    </TextBlock>
+                </StackPanel>
+
                 <!--SPACER-->
                 <StackPanel
-                    Grid.Row="13"
+                    Grid.Row="15"
                     Margin="0,10,0,0">
                 </StackPanel>
 
@@ -383,7 +456,7 @@
         <!--ANIME CONTROLS-->
         <Border
             Grid.Row="0"
-            Grid.RowSpan="2"
+            Grid.RowSpan="3"
             Grid.Column="1"
             Grid.ColumnSpan="2"
             Height="auto"
@@ -427,10 +500,10 @@
                 <!--GRID ROW 0-->
                 <StackPanel
                     Grid.Row="0">
-                    
+
                     <Label 
-                    Width="auto"
-                    Margin="20,20,20,0">
+                        Width="auto"
+                        Margin="20,20,20,0">
                         <TextBlock
                         x:Name="AnimeTitle"
                         FontSize="28"
@@ -439,9 +512,9 @@
                         HorizontalAlignment="Left"
                         TextWrapping="WrapWithOverflow" Text="Title">
                         </TextBlock>
-                    </Label>
-
-                    <Label 
+                        </Label>
+                    
+                        <Label 
                         x:Name="AnimeAltTitlePanel"
                         Width="auto"
                         Margin="20,0,20,0">
@@ -521,14 +594,31 @@
                 </WrapPanel>
 
                 <!--GRID ROW 2-->
-                <TextBlock 
-                    Grid.Row="2"
-                    x:Name="MenuTitle"
-                    FontSize="20"
-                    Margin="15,0,20,5"
-                    FontWeight="Bold"
-                    Foreground="White"
-                    Text="Episodes"></TextBlock>
+                <Grid
+                    Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+
+                    <TextBlock 
+                        Grid.Column="0"
+                        x:Name="MenuTitle"
+                        FontSize="20"
+                        Margin="15,0,20,5"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        VerticalAlignment="Bottom"
+                        Text="Episodes"></TextBlock>
+                    <ComboBox
+                        Grid.Column="3"
+                        x:Name="EpComboBox"
+                        Width="150"
+                        Margin="0,0,15,0" SelectionChanged="EpComboBox_SelectionChanged"></ComboBox>
+                </Grid>
 
                 <!--GRID ROW 3-->
                 <!--EPISODES-->
@@ -548,7 +638,7 @@
                         Visibility="Collapsed"></ui:TextBox>
 
                     <WrapPanel
-                            HorizontalAlignment="left"
+                            HorizontalAlignment="Center"
                             x:Name="EpisodesListPanel" 
                             Width="auto" Height="auto" 
                             ScrollViewer.CanContentScroll="True"
@@ -558,28 +648,6 @@
                             VirtualizingPanel.VirtualizationMode="Recycling" >
 
                         </WrapPanel>
-
-
-                    <StackPanel
-                    x:Name="ViewMoreEPPanel"
-                    Grid.Row="4"
-                    HorizontalAlignment="Center">
-
-                        <ui:Button 
-                        x:Name="ViewMoreEPControl"
-                        Padding="6" 
-                        Margin="0,0,0,10"
-                        Icon="ChevronDown28" 
-                        MinWidth="100" 
-                        Appearance="Secondary" 
-                        FontSize="16" Click="ViewMoreEPControl_Click" />
-
-                        <ui:ProgressRing 
-                        x:Name="ViewMoreLoadControl"
-                        Margin="0,10,0,10"
-                        Progress="0" IsIndeterminate="True"></ui:ProgressRing>
-
-                    </StackPanel>
 
 
                 </StackPanel>

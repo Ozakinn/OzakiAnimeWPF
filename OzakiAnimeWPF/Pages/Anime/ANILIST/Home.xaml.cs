@@ -23,6 +23,9 @@ using System.IO;
 using System.Drawing.Imaging;
 using Ozaki_Anime.Pages.SelectedAnime;
 using Pages;
+using System.Windows.Markup;
+using System.Timers;
+using System.Reflection;
 
 namespace OzakiAnimeWPF.Pages
 {
@@ -49,11 +52,15 @@ namespace OzakiAnimeWPF.Pages
 
         int marginScroll = 0;
 
+        string fetch_airing;
         string fetch_recent;
         string fetch_trending;
         BitmapImage trending_img_card;
         BitmapImage recent_img_card;
+        BitmapImage airing_img_card;
         BitmapImage cover_img;
+
+        HttpClient client;
 
         public Home(MainWindow main)
         {
@@ -65,8 +72,11 @@ namespace OzakiAnimeWPF.Pages
             jsonSetting = new SettingsJson();
             jsonSetting = SettingsFile.SettingRead();
 
+            HttpClientHandler clientHandler = new HttpClientHandler();
+            clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
 
-            
+            client = new HttpClient(clientHandler);
+
 
             //DEBUG PURPOSES ONLY
             //System.Windows.MessageBox.Show(jsonSetting.defaultAPILink);
@@ -79,6 +89,7 @@ namespace OzakiAnimeWPF.Pages
             SearchAnime.Visibility = Visibility.Hidden;
             TrendingStack.Visibility = Visibility.Collapsed;
             RecentStack.Visibility = Visibility.Collapsed;
+            AiringStack.Visibility = Visibility.Collapsed;
             HomeLoader.Visibility = Visibility.Visible;
 
             try
@@ -104,6 +115,7 @@ namespace OzakiAnimeWPF.Pages
                 SearchAnime.Visibility = Visibility.Visible;
                 TrendingStack.Visibility = Visibility.Visible;
                 RecentStack.Visibility = Visibility.Visible;
+                AiringStack.Visibility = Visibility.Visible;
                 HomeLoader.Visibility = Visibility.Hidden;
             }
             catch (Exception ex)
@@ -119,6 +131,7 @@ namespace OzakiAnimeWPF.Pages
                 SearchAnime.Visibility = Visibility.Hidden;
                 TrendingStack.Visibility = Visibility.Collapsed;
                 RecentStack.Visibility = Visibility.Collapsed;
+                AiringStack.Visibility = Visibility.Collapsed;
                 HomeLoader.Visibility = Visibility.Visible;
 
             }
@@ -138,6 +151,7 @@ namespace OzakiAnimeWPF.Pages
             SearchAnime.Visibility = Visibility.Hidden;
             TrendingStack.Visibility = Visibility.Collapsed;
             RecentStack.Visibility = Visibility.Collapsed;
+            AiringStack.Visibility = Visibility.Collapsed;
             HomeLoader.Visibility = Visibility.Visible;
 
             try
@@ -163,6 +177,7 @@ namespace OzakiAnimeWPF.Pages
                 SearchAnime.Visibility = Visibility.Visible;
                 TrendingStack.Visibility = Visibility.Visible;
                 RecentStack.Visibility = Visibility.Visible;
+                AiringStack.Visibility = Visibility.Visible;
                 HomeLoader.Visibility = Visibility.Hidden;
             }
             catch (Exception ex)
@@ -178,6 +193,7 @@ namespace OzakiAnimeWPF.Pages
                 SearchAnime.Visibility = Visibility.Hidden;
                 TrendingStack.Visibility = Visibility.Collapsed;
                 RecentStack.Visibility = Visibility.Collapsed;
+                AiringStack.Visibility = Visibility.Collapsed;
                 HomeLoader.Visibility = Visibility.Visible;
 
             }
@@ -190,7 +206,7 @@ namespace OzakiAnimeWPF.Pages
             {
                 var sw = new Stopwatch();
                 sw.Start();
-                await Task.WhenAll(fetchTrending(),fetchRecent());
+                await Task.WhenAll(fetchTrending(), fetchRecent(), fetchAiring());
                 //System.Windows.MessageBox.Show("done async");
                 sw.Stop();
 
@@ -211,8 +227,8 @@ namespace OzakiAnimeWPF.Pages
             await trending_urlValidation(jsonSetting.defaultAPILink + jsonSetting.defaultANILIST_TrendingPath);
             
 
-            var client = new HttpClient();
-            string trending_anime = await client.GetStringAsync(jsonSetting.defaultAPILink + jsonSetting.defaultANILIST_TrendingPath);
+            //var client = new HttpClient();
+            //string trending_anime = await client.GetStringAsync(jsonSetting.defaultAPILink + jsonSetting.defaultANILIST_TrendingPath);
 
             //System.Windows.MessageBox.Show("TREND: "+trending_anime);
             anilistTrending trending_anilist = JsonConvert.DeserializeObject<anilistTrending>(fetch_trending);
@@ -228,10 +244,23 @@ namespace OzakiAnimeWPF.Pages
 
             await recent_urlValidation(jsonSetting.defaultAPILink + jsonSetting.defaultANILIST_RecentPath);
 
-            var client = new HttpClient();
+            //var client = new HttpClient();
             //var recent_anime = await client.GetStringAsync(jsonSetting.defaultAPILink + jsonSetting.defaultANILIST_RecentPath);
             anilistRecent recent_anilist = JsonConvert.DeserializeObject<anilistRecent>(fetch_recent);
             generateRecent(recent_anilist);
+        }
+
+        public async Task fetchAiring()
+        {
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+
+            await airing_urlValidation(jsonSetting.defaultAPILink + jsonSetting.defaultANILIST_AiringSchedPath+ "?notYetAired=true&perPage=50");
+
+            //var client = new HttpClient();
+            //var recent_anime = await client.GetStringAsync(jsonSetting.defaultAPILink + jsonSetting.defaultANILIST_RecentPath);
+            anilistAiringSchedule airing_anilist = JsonConvert.DeserializeObject<anilistAiringSchedule>(fetch_airing);
+            generateAiring(airing_anilist);
         }
         public async void generateTrending(anilistTrending trending)
         {
@@ -244,7 +273,7 @@ namespace OzakiAnimeWPF.Pages
 
                 //Declare and initialize image to bitmap
                 await trending_image_urlValidation(trending.results[i].image);
-                var httpClint = new HttpClient();
+                //var httpClint = new HttpClient();
                 //var imageBytes = await httpClint.GetStreamAsync(img_card);
 
                 //Cover Artwork without Opacity
@@ -416,6 +445,159 @@ namespace OzakiAnimeWPF.Pages
             }
         }
 
+        public async void generateAiring(anilistAiringSchedule airing)
+        {
+
+            for (int i = 0; i < airing.results.Length; i++)
+            {
+                var airingCardPanel = new System.Windows.Controls.StackPanel();
+                var airingText = new System.Windows.Controls.TextBlock();
+                var airingCountdown = new System.Windows.Controls.TextBlock();
+                var airingBadge = new Wpf.Ui.Controls.Badge();
+                var airingCard = new Wpf.Ui.Controls.Button();
+
+                //Declare and initialize image to bitmap
+                await airing_image_urlValidation(airing.results[i].cover);
+
+                DateTime AirDate = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+
+                int time_air = int.Parse(airing.results[i].airingAt);
+                AirDate = AirDate.AddSeconds(time_air).ToLocalTime();
+
+                System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+                dispatcherTimer.Tick += (sender, e) => DispatcherTimer_Tick(sender, e,airingCountdown, AirDate);
+
+                TimeSpan span = TimeSpan.FromMilliseconds(time_air);
+                airingCountdown.Text = countdownFormat(span);
+
+
+                //AiringTimer.ToolTip = AirDate.ToString("ddd, d MMM yyyy, h:mm tt zzz");
+
+                dispatcherTimer.Start();
+
+                //OLD BUT STILL WORKS, NO VALIDATION
+                /*
+                var httpClint = new HttpClient();
+                var imageBytes = await httpClint.GetStreamAsync(recent.results[i].image);
+
+                var bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = imageBytes;
+                bitmapImage.EndInit();
+                */
+                object txt = this.FindName("arCount_" + i);
+
+                if (txt is not null)
+                {
+                    if (((System.Windows.Controls.TextBlock)txt).Name == "arCount_" + i)
+                    {
+                        UnregisterName("arCount_" + i);
+                    }
+                }
+
+                //Airing Countdown
+                airingCountdown.Margin = new Thickness(0,15,0,0);
+                airingCountdown.FontSize = 12;
+                airingCountdown.FontWeight = FontWeights.Medium;
+                airingCountdown.TextAlignment = TextAlignment.Center;
+                airingCountdown.TextWrapping = TextWrapping.Wrap;
+                RegisterName("arCount_" + i, airingCountdown);
+
+                //Cover Artwork without Opacity
+                ImageBrush cardCover = new ImageBrush();
+                cardCover.Stretch = Stretch.UniformToFill;
+                cardCover.ImageSource = airing_img_card;
+                cardCover.Opacity = 0.20;
+
+                //Cover Artwork with Opacity
+                ImageBrush cardCoverOpacity = new ImageBrush();
+                cardCoverOpacity.Stretch = Stretch.UniformToFill;
+                cardCoverOpacity.ImageSource = airing_img_card;
+                cardCoverOpacity.Opacity = 1;
+
+                //Modify airing Card Style
+                airingCard.Background = cardCover;
+                airingCard.Height = 150;
+                airingCard.Width = 275;
+                airingCard.MouseOverBackground = cardCoverOpacity;
+                airingCard.ToolTip = AirDate.ToString("ddd, d MMM yyyy, h:mm tt zzz");
+                airingCard.Tag = new
+                {
+                    panel = airingCardPanel,
+                    selected_airing_id = airing.results[i].id
+                };
+
+                var title = airing.results[i].title.userPreferred;
+                var episodeNum = airing.results[i].episode;
+                //var recent_subordub = recent_array_subordub[i].ToString().ToUpper();
+
+                airingBadge.FontSize = 10;
+                airingBadge.FontWeight = FontWeights.Bold;
+                airingBadge.Background = Brushes.LimeGreen;
+                airingBadge.VerticalAlignment = VerticalAlignment.Top;
+                airingBadge.HorizontalAlignment = HorizontalAlignment.Center;
+                airingBadge.Content = "EP " + episodeNum;
+
+                airingText.FontSize = 14;
+                airingText.FontWeight = FontWeights.Bold;
+                airingText.TextAlignment = TextAlignment.Center;
+                airingText.TextWrapping = TextWrapping.Wrap;
+                airingText.Text = title;
+
+                airingCardPanel.Name = "recentCardPanel";
+                airingCardPanel.Children.Add(airingText);
+                airingCardPanel.Children.Add(airingBadge);
+                airingCardPanel.Children.Add(airingCountdown);
+
+                airingCard.Content = airingCardPanel;
+                airingCardPanel.Visibility = Visibility.Visible;
+
+                airingCard.Margin = new System.Windows.Thickness(5,0,5,10);
+
+                //Render and Add the control for the recent Anime
+                AiringPanel.Children.Add(airingCard);
+
+                //recentCard.Click += new RoutedEventHandler(recentCards_Click);
+                airingCard.MouseEnter += new MouseEventHandler(airingCards_MouseEnter);
+                airingCard.MouseLeave += new MouseEventHandler(airingCards_MouseLeave);
+            }
+        }
+
+        //Calculate Airing Time
+        private void DispatcherTimer_Tick(object? sender, EventArgs e, TextBlock ss, DateTime ar)
+        {
+            TimeSpan span = ar.Subtract(DateTime.Now);
+            ss.Text = countdownFormat(span);
+        }
+        public string countdownFormat(TimeSpan ts)
+        {
+            if (ts.Days == 0)
+            {
+                string yow = String.Format("{0}h {1}m {2}s",
+                    ts.Hours, ts.Minutes, ts.Seconds);
+                return yow;
+            }
+            else if (ts.Days == 0 && ts.Hours == 0)
+            {
+                string yow = String.Format("{0}m {1}s",
+                    ts.Minutes, ts.Seconds);
+                return yow;
+            }
+            else if (ts.Days == 0 && ts.Hours == 0 && ts.Minutes == 0)
+            {
+                string yow = String.Format("{0}s",
+                    ts.Seconds);
+                return yow;
+            }
+            else
+            {
+                string yow = String.Format("{0}d {1}h {2}m {3}s",
+                    ts.Days, ts.Hours, ts.Minutes, ts.Seconds);
+                return yow;
+            }
+        }
+
+
         //Popular Card Events
         private void trending_Cards_Click(object sender, RoutedEventArgs e)
         {
@@ -423,7 +605,7 @@ namespace OzakiAnimeWPF.Pages
             string trending_id = ((dynamic)buttonThatWasClicked.Tag).selected_trending_id;
             string trending_selected_img = ((dynamic)buttonThatWasClicked.Tag).selected_trending_img;
 
-            this.NavigationService.Navigate(new SelectedAnime(trending_id, trending_selected_img));
+            this.NavigationService.Navigate(new SelectedAnime(trending_id));
             //System.Windows.MessageBox.Show(test.ToString());
 
         }
@@ -524,6 +706,23 @@ namespace OzakiAnimeWPF.Pages
         }
 
         private void recentCards_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Wpf.Ui.Controls.Button buttonMouseEnter = (Wpf.Ui.Controls.Button)sender;
+            System.Windows.Controls.StackPanel panel = ((dynamic)buttonMouseEnter.Tag).panel;
+
+            panel.Visibility = Visibility.Hidden;
+        }
+
+        //Airing Card Events
+        private void airingCards_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Wpf.Ui.Controls.Button buttonMouseEnter = (Wpf.Ui.Controls.Button)sender;
+            System.Windows.Controls.StackPanel panel = ((dynamic)buttonMouseEnter.Tag).panel;
+
+            panel.Visibility = Visibility.Visible;
+        }
+
+        private void airingCards_MouseEnter(object sender, MouseEventArgs e)
         {
             Wpf.Ui.Controls.Button buttonMouseEnter = (Wpf.Ui.Controls.Button)sender;
             System.Windows.Controls.StackPanel panel = ((dynamic)buttonMouseEnter.Tag).panel;
@@ -638,10 +837,7 @@ namespace OzakiAnimeWPF.Pages
         {
             var sw = new Stopwatch();
             sw.Start();
-
             
-            
-            HttpClient client = new HttpClient();
             HttpResponseMessage response = await client.GetAsync(url);
 
             sw.Stop();
@@ -666,10 +862,28 @@ namespace OzakiAnimeWPF.Pages
                 return false;
             }
         }
+        public async Task airing_urlValidation(string url)
+        {
+            HttpResponseMessage response = new HttpResponseMessage();
+            bool checker = false;
+            while (checker == false)
+            {
+                response = await client.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    checker = true;
+                    var getResponsestring = await response.Content.ReadAsStringAsync();
+                    //System.Windows.MessageBox.Show("Success Recent EP");
+                    fetch_airing = getResponsestring;
+                }
+            }
+
+
+        }
 
         public async Task recent_urlValidation(string url)
         {
-            HttpClient client = new HttpClient();
             HttpResponseMessage response = new HttpResponseMessage();
             bool checker = false;
             while (checker == false)
@@ -690,7 +904,6 @@ namespace OzakiAnimeWPF.Pages
 
         public async Task trending_urlValidation(string url)
         {
-            HttpClient client = new HttpClient();
             HttpResponseMessage response = new HttpResponseMessage();
             bool checker = false;
             while (checker == false)
@@ -710,9 +923,9 @@ namespace OzakiAnimeWPF.Pages
 
         public async Task trending_image_urlValidation(string url)
         {
-            HttpClient client = new HttpClient();
             HttpResponseMessage response = new HttpResponseMessage();
-            
+
+            //System.Net.Http.HttpRequestException: 'The SSL connection could not be established, see inner exception.'
             response = await client.GetAsync(url);
 
             if (response.IsSuccessStatusCode)
@@ -758,7 +971,6 @@ namespace OzakiAnimeWPF.Pages
 
         public async Task recent_image_urlValidation(string url)
         {
-            HttpClient client = new HttpClient();
             HttpResponseMessage response = new HttpResponseMessage();
 
             response = await client.GetAsync(url);
@@ -803,10 +1015,55 @@ namespace OzakiAnimeWPF.Pages
 
 
         }
+        public async Task airing_image_urlValidation(string url)
+        {
+            HttpResponseMessage response = new HttpResponseMessage();
+
+            response = await client.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                try
+                {
+                    var getResponsestring = await response.Content.ReadAsStreamAsync();
+                    //System.Windows.MessageBox.Show("Success Trending IMG");
+                    var bitmapImage = new BitmapImage();
+                    bitmapImage.BeginInit();
+                    bitmapImage.StreamSource = getResponsestring;
+                    bitmapImage.EndInit();
+                    airing_img_card = bitmapImage;
+                }
+                catch (Exception ex)
+                {
+                    string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                    string imageRelativePath = "Images\\Background\\Noimage.png";
+                    string imagePath = Path.Combine(baseDirectory, imageRelativePath);
+
+                    var bitmap = new System.Drawing.Bitmap(imagePath);
+                    airing_img_card = ToBitmapImage(bitmap);
+                }
+            }
+            else
+            {
+                string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                string imageRelativePath = "Images\\Background\\Noimage.png";
+                string imagePath = Path.Combine(baseDirectory, imageRelativePath);
+
+                var bitmap = new System.Drawing.Bitmap(imagePath);
+                airing_img_card = ToBitmapImage(bitmap);
+
+                //img_card = ToBitmapImage(bitmap);
+
+                //var tet = new ImageBrush(new BitmapImage(new Uri(@"C:\Users\Krystler\source\repos\OzakiAnimeWPF\OzakiAnimeWPF\Images\Background\Noimage.png", UriKind.Relative)));
+                //img_card = new BitmapImage(new Uri("pack://application:,,,/Images/Background/Noimage.png"));
+                //System.Windows.MessageBox.Show("here");
+            }
+
+
+        }
 
         public async Task cover_image_urlValidation(string url)
         {
-            HttpClient client = new HttpClient();
             HttpResponseMessage response = new HttpResponseMessage();
 
             response = await client.GetAsync(url);

@@ -1,16 +1,13 @@
-var video = document.getElementById('video');
+const video = document.querySelector('video');
+const player = new Plyr(video, { captions: { active: true, update: true, language: 'en' }, controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay'], fullscreen: { enabled: false, fallback: true, iosNative: false, container: null } });
 
 function playM3u8(url){
   if(Hls.isSupported()) {
-      video.volume = 0.3;
-      var hls = new Hls();
-      var m3u8Url = decodeURIComponent(url)
-      hls.loadSource(m3u8Url);
-      hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED,function() {
-        video.play();
-      });
-      document.title = url
+    const hls = new Hls();
+    var m3u8Url = decodeURIComponent(url)
+    hls.loadSource(m3u8Url);
+    hls.attachMedia(video);
+    window.hls = hls;
     }
 	else if (video.canPlayType('application/vnd.apple.mpegurl')) {
 		video.src = url;
@@ -20,6 +17,7 @@ function playM3u8(url){
 		video.volume = 0.3;
 		document.title = url;
   	}
+    window.player = player;
 }
 
 function playPause() {

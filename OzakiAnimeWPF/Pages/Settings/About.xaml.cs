@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using OzakiAnimeWPF;
+using Squirrel;
 using Wpf.Ui.Controls;
 
 namespace Pages.Settings
@@ -24,6 +25,7 @@ namespace Pages.Settings
         public About()
         {
             InitializeComponent();
+            getVersion();
         }
 
         private void Github_Click(object sender, RoutedEventArgs e)
@@ -35,6 +37,14 @@ namespace Pages.Settings
             };
             System.Diagnostics.Process.Start(sInfo);
             showDialog();
+        }
+
+        public void getVersion()
+        {
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            FileVersionInfo fileVersion = FileVersionInfo.GetVersionInfo(assembly.Location);
+            string version = fileVersion.FileVersion;
+            buildVersion.Content = "Build Version "+ version;
         }
 
         public void showDialog()
@@ -49,6 +59,23 @@ namespace Pages.Settings
         private void AboutDialog_ButtonLeftClick(object sender, RoutedEventArgs e)
         {
             AboutDialog.Hide();
+        }
+
+        private async void CheckUpdate_Click(object sender, RoutedEventArgs e)
+        {
+
+            using (var mgr = new GithubUpdateManager(@"https://github.com/Ozakinn/OzakiAnimeWPF"))
+            {
+
+                var newVersion = await mgr.UpdateApp();
+
+                System.Windows.MessageBox.Show(newVersion.ToString());
+                // optionally restart the app automatically, or ask the user if/when they want to restart
+                if (newVersion != null)
+                {
+                    UpdateManager.RestartApp();
+                }
+            }
         }
     }
 }

@@ -8,13 +8,14 @@
           Background="{ui:ThemeResource ApplicationBackgroundBrush}"
           mc:Ignorable="d"
           Scrollable="True"
-          d:DesignHeight="800" d:DesignWidth="800"
+          d:DesignHeight="1500" d:DesignWidth="800"
           Title="Home" Loaded="UiPage_Loaded" Unloaded="UiPage_Unloaded">
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="600" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="150" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -86,16 +87,16 @@
                                 <TextBlock
                             FontSize="18"
                             Foreground="#B7FFFFFF"
-                            Text="Watch everything on your desktop. It's completely free." />
+                            Text="You are now looking through Anime." />
 
                                 <ui:TextBox 
                                 x:Name="SearchAnime"
                                 Icon="Search24" 
+                                    Width="350"
                                 PlaceholderText="Search your anime..." 
                                 IconPlacement="Right" 
                                 Margin="0,5,0,0" KeyDown="SearchAnime_KeyDown"
-                                    Background="#60000000"
-                                    >
+                                    Background="#60000000">
                                 </ui:TextBox>
 
 
@@ -129,7 +130,7 @@
 
                 <!--Trending Now-->
                 <StackPanel 
-                x:Name="TrendingStack" 
+                x:Name="TrendingStack"
                 Grid.Row="1"
                 Visibility="Visible">
                     <Grid>
@@ -184,7 +185,7 @@
         
 
         <!--Start of New Release Card List-->
-        <Grid Grid.Row="2" Margin="0,-160,0,0">
+        <Grid Grid.Row="2" Margin="0,-160,0,20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition  Height="auto" />
@@ -242,6 +243,51 @@
                     </VirtualizingStackPanel>
 
                 </ScrollViewer>
+            </StackPanel>
+
+
+
+        </Grid>
+
+        <!--Start of Airing Card List-->
+        <Grid Grid.Row="3" Margin="0,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition  Height="auto" />
+                <RowDefinition  Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+
+            <!--Airing-->
+            <StackPanel 
+                x:Name="AiringStack" 
+                Grid.Row="3"
+                Visibility="Visible">
+                <Grid>
+
+                    <TextBlock
+                        Margin="64,0,0,18"
+                        FontSize="22"
+                        FontWeight="Bold"
+                        Foreground="#FFFFFF"
+                        Text="Airing Schedule"
+                        HorizontalAlignment="Left"/>
+                </Grid>
+
+                <WrapPanel
+                    HorizontalAlignment="Center"
+                    x:Name="AiringPanel" 
+                    Width="auto" Height="auto" 
+                    ScrollViewer.CanContentScroll="True"
+                    VirtualizingPanel.IsVirtualizing="True" 
+                    VirtualizingPanel.IsContainerVirtualizable="True" 
+                    VirtualizingPanel.ScrollUnit="Pixel" 
+                    VirtualizingPanel.VirtualizationMode="Recycling" >
+
+                </WrapPanel>
             </StackPanel>
 
 

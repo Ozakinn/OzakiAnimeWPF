@@ -260,6 +260,42 @@ namespace OzakiAnimeWPF.Data
         public string? quality { get; set; }
     }
 
+    //AIRING SCHEDULE
+
+    public class anilistAiringSchedule
+    {
+        public int currentPage { get; set; }
+        public bool hasNextPage { get; set; }
+        public AiringSchedule[]? results { get; set; }
+    }
+
+    public class AiringSchedule
+    {
+        public string? id { get; set; }
+        public string? malId { get; set; }
+        public string? episode { get; set; }
+        public string? airingAt { get; set; }
+        public Title_Airing? title { get; set; }
+        public string? country { get; set; }
+        public string? image { get; set; }
+        public string? description { get; set; }
+        public string? cover { get; set; }
+        public string[]? genres { get; set; }
+        public string? color { get; set; }
+        public string? rating { get; set; }
+        public string? releaseDate { get; set; }
+        public string? type { get; set; }
+    }
+
+    public class Title_Airing
+    {
+        public string? romaji { get; set; }
+        public string? english { get; set; }
+        public string? native { get; set; }
+        public string? userPreferred { get; set; }
+    }
+
+
 
 
     //ANILIST PROPERTIES - END

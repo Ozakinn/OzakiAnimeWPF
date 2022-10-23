@@ -1,25 +1,34 @@
-<html><head>
-  <script src="js/jquery-3.2.1.min.js" charset="utf-8"></script>
-  <script src="js/hls.js" charset="utf-8"></script>
-  <script src="mousetrap.min.js" charset="utf-8"></script>
-  <style>
-    body{
-      background-color:black;
-    }
-    #video{
-      position: absolute;
-      top: 0px;
-      right: 0px;
-      bottom: 0px;
-      left: 0px;
-      margin: auto;
-      max-height: 100%;
-      max-width: 100%;
-    }
-  </style>
-<title>M3U8 Player running...</title></head>
-<body>
-  <video id="video" style="width: 100%; height: 100%;" controls controlsList="nofullscreen" preload="auto"></video>
+<html>
+<head>
+    <link rel="stylesheet" href="plyr.css" />
+    <script src="js/plyr.js"></script>
+    <script src="js/hls.js"></script>
+
+    <style>
+        body {
+            background-color: black;
+        }
+        #myVideo {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+        }
+
+    </style>
+
+</head>
+  <body oncontextmenu="return false;">
+      <video id="myVideo" playsinline autoplay
+             controls
+             ></video>
+    <!-- Plyr resources and browser polyfills are specified in the pen settings -->
+    <!-- Hls.js 0.9.x and 0.10.x both have critical bugs affecting this demo. Using fixed git hash to when it was working (0.10.0 pre-release), until https://github.com/video-dev/hls.js/issues/1790 has been resolved -->
+    
   <script src="player.js"></script>
-</body>
+
+  </body>
+
+
 </html>

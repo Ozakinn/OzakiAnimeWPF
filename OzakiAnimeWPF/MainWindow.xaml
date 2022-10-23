@@ -74,7 +74,8 @@
                             x:Name="navAnime"
                             Content="Anime"
                             Icon="VehicleTruckProfile24"
-                            PageTag="Anime"/>
+                            PageTag="Anime"
+                            Click="navAnime_Click"/>
                         <ui:NavigationItem 
                             x:Name="navManga"
                             Content="Manga"
@@ -128,8 +129,8 @@
             <!--Frame for Pages #2E2E2E-->
             <Border
                 Margin="5,0,0,0"
-                Background="Transparent"
                 BorderThickness="0"
+                Background="Transparent"
                 BorderBrush="Transparent"
                 Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"
                 CornerRadius="8,0,0,0">
@@ -208,15 +209,16 @@
 
             <!--TitleBar-->
             <Border
-                Margin="15,0,0,0"
+                Margin="0"
                 Grid.Column="1" Grid.ColumnSpan="2"
                 Grid.Row="0">
+
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
 
+                    <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
@@ -230,13 +232,13 @@
                         BorderBrush="Transparent"
                         Icon="ArrowCircleLeft48"
                         FontSize="20"
+                        Margin="15,0,0,0"
                         Visibility="Hidden"
                         Click="btnBack_Click"/>
 
                     <ui:TitleBar 
                         Background="Transparent"
-                        Grid.Row="0"
-                        Grid.Column="2"
+                        Grid.Column="1"
                         Title=""
                         ForceShutdown="False"
                         MinimizeToTray="False"

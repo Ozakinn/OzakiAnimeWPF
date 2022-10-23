@@ -28,7 +28,7 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto" MinHeight="600"></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
@@ -69,16 +69,23 @@
                 <!--VIDEO PANEL-->
                 <wpf:WebView2 
                     Grid.Row="1"
-                    Margin="20,5,20,10"
-                    x:Name="webviewBrowser" 
+                    Margin="20,5,20,0"
                     MinHeight="600"
-                    MaxHeight="1000" >
+                    x:Name="webviewBrowser">
                 </wpf:WebView2>
+
+                <GridSplitter 
+                    Grid.Row="2" 
+                    Height="1"
+                    Margin="0,5,0,0" 
+                    Background="Transparent" 
+                    VerticalAlignment="Top" 
+                    HorizontalAlignment="Stretch" />
 
                 <!--QUALITY AND CONTROL PANEL-->
                 <Grid
                     Grid.Row="2"
-                    Margin="20,0,20,5">
+                    Margin="20,10,20,5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"></RowDefinition>
                         <RowDefinition Height="auto"></RowDefinition>

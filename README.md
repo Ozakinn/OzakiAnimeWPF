@@ -13,6 +13,10 @@ Ozaki Anime
 -	Internet
 - [OPTIONAL] Host your own API and paste it in the developer settings, if you prefer faster load time (https://github.com/consumet/api.consumet.org).
 
+## Note:
+If the Anti-Virus detected something in the app. You can quarantine or remove it. But will loss the auto update feature.
+(False virus as a result of clown.squirrel's and the app's lack of code signing. Signing it cost a lot of penny)
+
 ## Community
 **This app will receive updates for new features (unless I have time).** 
 

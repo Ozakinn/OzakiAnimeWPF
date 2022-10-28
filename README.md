@@ -88,6 +88,7 @@ Settings
 
 ### TODO
 - Changeable API Route (gogoanime, zoro, anime)
+- Discord RPC
 - Manga
 - Comics
 - Movies
